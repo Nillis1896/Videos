@@ -138,10 +138,10 @@
   #cardA { left: 150px; } #cardB { right: 150px; }
   #oder { position: absolute; z-index: 2; left: 0; right: 0; top: 250px; text-align: center; font: 900 50px/1 var(--font-rune); }
 
-  #roll { margin-top: 18px; width: 700px; padding: 22px 34px 24px; }
-  #rolllist { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 26px; }
-  .rl { font: 900 38px/1.12 var(--font-engrave); color: #e9dfcf; text-shadow: 0 2px 0 #000; }
-  .rl small { display: block; font: 700 22px/1.2 var(--font-engrave); letter-spacing: .16em; color: var(--gold); }
+  #roll { margin-top: 16px; width: 880px; padding: 20px 30px 22px; }
+  #rolllist { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 22px; }
+  .rl { font: 900 31px/1.1 var(--font-engrave); overflow-wrap: anywhere; color: #e9dfcf; text-shadow: 0 2px 0 #000; }
+  .rl small { display: block; font: 700 19px/1.2 var(--font-engrave); letter-spacing: .16em; color: var(--gold); }
   .cap { position: absolute; left: 90px; right: 150px; top: 1215px; text-align: center; visibility: hidden; opacity: 0; }
   .cap > div { display: inline-block; font: 84px/1.05 var(--font-display); color: #fff; }
   .cap .g { color: var(--gold); } .cap .r { color: var(--danger); }
@@ -284,7 +284,10 @@ const VOICES = [{"id":"tag2","name":"Bartholomeus","desc":"psycho","src":"audio/
 // neue Follower seit Tag 1: Name und Rolle (Rolle bestimmt das Aussehen)
 const RECRUITS = [
   ["Lucas", "Hexenkönig", "wraith"], ["Timon", "Hexenkönig", "wraith"], ["Leon", "Saruman", "white"], ["RBL", "Riese", "giant"],
-  ["Raptor", "Lurtz", "uruk"], ["Pippo", "Istari", "grey"], ["Tim", "Wikinger", "viking"], ["Konstantin", "General", "general"]
+  ["Raptor", "Lurtz", "uruk"], ["Pippo", "Istari", "grey"], ["Tim", "Wikinger", "viking"], ["Konstantin", "General", "general"],
+  ["Niklas", "Wargreiter", "warg"], ["Henrik", "Uruk-Hai", "uruk"], ["mb2008", "Trollhäuptling", "troll"], ["MaggiManni", "Olog-Hai", "olog"],
+  ["Charles", "Smaug", "dragon"], ["Jona", "Riesen-Ork", "bigorc"], ["Pfanekuchen", "Kommandant", "commander"],
+  ["Zueng", "Nazgûl", "wraith"], ["Edangelo", "Kommandant", "commander"], ["Zoll", "Offizier", "officer"]
 ];
 const NEW_ORKS = RECRUITS.length;
 let V = VOICES[0];
@@ -580,7 +583,7 @@ const wallBlocks = [];
 const orcs = [];
 {
   const M = (c, o) => std(c, { flatShading: false, ...o });
-  const SLOTS = [[-1.7, -0.4], [1.8, -0.5], [-2.7, 0.5], [-3.7, -1.7], [2.8, 0.4], [-1.2, 1.0], [1.3, 1.0], [3.5, -1.1], [-2.2, -1.9], [2.3, -2.0], [0.6, -2.4], [-0.7, -2.3], [-3.5, 1.1], [3.7, 1.2]];
+  const SLOTS = [[-1.7, -0.4], [1.8, -0.5], [-2.7, 0.5], [-3.8, -1.8], [2.8, 0.4], [-1.2, 1.0], [1.3, 1.0], [3.6, -1.0], [-4.4, 1.0], [2.4, -1.5], [3.9, -2.7], [-1.5, -2.9], [2.6, -6.2], [1.3, -2.8], [4.3, 1.3], [-3.3, -3.3], [-4.6, 2.4], [0.0, -4.0], [3.0, -4.3]];
   const LOOK = {
     wraith:  { skin: 0x111014, body: 0x141218, robe: 0x0e0d10, head: "crown", eyes: 0x9fd8ff, weapon: "sword", scale: 1.15 },
     white:   { skin: 0xd8c2a8, body: 0xe8e6e0, robe: 0xf2f0ea, head: "hair", beard: 0xf0f0f0, weapon: "staffdark", scale: 1.1 },
@@ -588,31 +591,69 @@ const orcs = [];
     uruk:    { skin: 0x2e2a24, body: 0x1c1814, head: "uruk", eyes: 0xff3a1a, weapon: "sword", scale: 1.15 },
     grey:    { skin: 0xd8c2a8, body: 0x7a7a80, robe: 0x8a8a90, head: "hat", beard: 0xcfcfcf, weapon: "staffglow", scale: 1.1 },
     viking:  { skin: 0xd8b090, body: 0x5a3a24, head: "horns", beard: 0xc0602a, weapon: "axe", scale: 1.05 },
-    general: { skin: 0x4f7a2e, body: 0x2a2b33, head: "plume", eyes: 0xff3a1a, weapon: "sword", cape: true, scale: 1.12 }
+    general: { skin: 0x4f7a2e, body: 0x2a2b33, head: "plume", eyes: 0xff3a1a, weapon: "sword", cape: true, scale: 1.12 },
+    warg:    { skin: 0x4f7a2e, body: 0x3a2414, head: "bald", eyes: 0xff3a1a, weapon: "sword", scale: 1.0 },
+    troll:   { skin: 0x5e6a52, body: 0x3a2a1a, head: "bonecrown", eyes: 0xffb02a, weapon: "club", scale: 1.9 },
+    olog:    { skin: 0x2a2a30, body: 0x1a1a1e, head: "helm", eyes: 0xff3a1a, weapon: "bigsword", armor: true, scale: 1.8 },
+    bigorc:  { skin: 0x4f7a2e, body: 0x3a2414, head: "bald", eyes: 0xff3a1a, weapon: "club", scale: 1.55 },
+    commander: { skin: 0x4f7a2e, body: 0x2a2b33, head: "helm", eyes: 0xff3a1a, weapon: "banner", cape: true, scale: 1.15 },
+    officer: { skin: 0x4f7a2e, body: 0x3a2a1a, head: "helm", eyes: 0xff3a1a, weapon: "sword", cape: true, scale: 1.05 },
+    dragon:  { scale: 1.0 }
   };
   RECRUITS.forEach(([name, role, kind], i) => {
     const L = LOOK[kind] || LOOK.uruk, [x, z] = SLOTS[i];
     const o = new THREE.Group(), body = new THREE.Group(); o.add(body);
+    if (kind === "dragon") {
+      const red = std(0x8a1a12, { flatShading: false }), belly = std(0xd8903a), horn = std(0xe8dcc0), wingM = std(0x5a0e0a, { side: THREE.DoubleSide });
+      const b = mesh(new THREE.SphereGeometry(0.9, 14, 10), red, 0, 1.6, 0, body); b.scale.set(1, 0.85, 1.6);
+      mesh(new THREE.SphereGeometry(0.7, 12, 8), belly, 0, 1.35, 0.3, body).scale.set(0.9, 0.7, 1.3);
+      const neck = mesh(new THREE.CylinderGeometry(0.25, 0.4, 1.4, 10), red, 0, 2.4, 1.3, body); neck.rotation.x = 0.7;
+      const hd = new THREE.Group(); hd.position.set(0, 3.0, 1.95); body.add(hd);
+      mesh(new THREE.BoxGeometry(0.45, 0.35, 0.8), red, 0, 0, 0.1, hd);
+      [-1, 1].forEach(s2 => { mesh(new THREE.SphereGeometry(0.06, 8, 6), glow(0xffd04a), s2 * 0.16, 0.08, 0.42, hd); const h2 = mesh(new THREE.ConeGeometry(0.06, 0.4, 6), horn, s2 * 0.15, 0.3, -0.25, hd); h2.rotation.x = -0.8; });
+      const tail = mesh(new THREE.ConeGeometry(0.35, 2.6, 8), red, 0, 1.3, -2.2, body); tail.rotation.x = -1.35;
+      [-1, 1].forEach(s2 => { const lg = mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.9, 6), red, s2 * 0.55, 0.45, s2 > 0 ? 0.6 : 0.6, body); mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.9, 6), red, s2 * 0.55, 0.45, -0.7, body); });
+      const wings = [];
+      [-1, 1].forEach(s2 => { const wg = new THREE.Group(); wg.position.set(s2 * 0.6, 2.1, 0.1); body.add(wg); const shape = new THREE.Shape(); shape.moveTo(0, 0); shape.lineTo(2.6, 0.9); shape.lineTo(3.2, -0.3); shape.lineTo(2.2, -0.8); shape.lineTo(1.4, -0.6); shape.lineTo(0.6, -1.0); shape.lineTo(0, -0.4); const wm = new THREE.Mesh(new THREE.ShapeGeometry(shape), wingM); wm.rotation.x = -Math.PI / 2; wm.scale.x = s2; wg.add(wm); wings.push(wg); });
+      o.userData = { slot: new THREE.Vector3(x, 0, z), start: new THREE.Vector3(-22, 14, -34), body, dragon: true, wings };
+      o.rotation.y = -0.9; o.scale.setScalar(1.2); o.visible = false; scene.add(o); orcs.push(o); return;
+    }
+    if (kind === "warg") {
+      const fur = std(0x5a5650, { flatShading: false }), wg = new THREE.Group(); body.add(wg);
+      const wb = mesh(new THREE.SphereGeometry(0.42, 12, 8), fur, 0, 0.72, 0, wg); wb.scale.set(0.8, 0.75, 1.5);
+      [[-0.2, 0.4], [0.2, 0.4], [-0.2, -0.4], [0.2, -0.4]].forEach(([lx, lz]) => mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.6, 6), fur, lx, 0.3, lz, wg));
+      const wh = mesh(new THREE.BoxGeometry(0.3, 0.28, 0.5), fur, 0, 0.95, 0.72, wg);
+      mesh(new THREE.BoxGeometry(0.18, 0.14, 0.25), fur, 0, 0.88, 1.02, wg);
+      [-1, 1].forEach(s2 => { mesh(new THREE.ConeGeometry(0.06, 0.16, 4), fur, s2 * 0.1, 1.15, 0.62, wg); mesh(new THREE.SphereGeometry(0.03, 6, 6), glow(0xffd04a), s2 * 0.09, 1.0, 0.98, wg); });
+      const tl2 = mesh(new THREE.ConeGeometry(0.08, 0.5, 6), fur, 0, 0.85, -0.75, wg); tl2.rotation.x = -1.1;
+      body.position.y = 0; wg.position.y = 0; body.userData.rider = 0.62;
+    }
     const skin = M(L.skin), cloth = M(L.body), dark = M(0x1c1612), wood = M(0x5a3a1a), steel = metal(0x8a8c94);
-    if (L.robe) { mesh(new THREE.CylinderGeometry(0.17, 0.32, 0.8, 10), M(L.robe), 0, 0.4, 0, body); }
-    else { [-1, 1].forEach(s => mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.34, 6), dark, s * 0.1, 0.17, 0, body)); mesh(new THREE.CylinderGeometry(0.2, 0.24, 0.42, 8), cloth, 0, 0.55, 0, body); }
-    mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.08, 8), cloth, 0, 0.74, 0, body);
-    [-1, 1].forEach(s => { const a = mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.38, 6), L.robe ? M(L.robe) : skin, s * 0.27, 0.6, 0, body); a.rotation.z = s * 0.25; });
-    if (L.cape) { const c = mesh(new THREE.CylinderGeometry(0.22, 0.38, 0.7, 10, 1, true, Math.PI * 0.6, Math.PI * 0.8), M(0x8a1010, { side: THREE.DoubleSide }), 0, 0.5, -0.04, body); }
-    const head = mesh(new THREE.SphereGeometry(0.16, 12, 10), kind === "wraith" ? M(0x050506) : skin, 0, 0.93, 0.02, body);
+    const hb = kind === "warg" ? new THREE.Group() : body; if (kind === "warg") { hb.position.set(0, 0.55, 0); hb.scale.setScalar(0.85); body.add(hb); }
+    if (L.robe) { mesh(new THREE.CylinderGeometry(0.17, 0.32, 0.8, 10), M(L.robe), 0, 0.4, 0, hb); }
+    else { [-1, 1].forEach(s => mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.34, 6), dark, s * 0.1, 0.17, 0, body)); mesh(new THREE.CylinderGeometry(0.2, 0.24, 0.42, 8), cloth, 0, 0.55, 0, hb); }
+    mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.08, 8), cloth, 0, 0.74, 0, hb);
+    [-1, 1].forEach(s => { const a = mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.38, 6), L.robe ? M(L.robe) : skin, s * 0.27, 0.6, 0, hb); a.rotation.z = s * 0.25; });
+    if (L.cape) { const c = mesh(new THREE.CylinderGeometry(0.22, 0.38, 0.7, 10, 1, true, Math.PI * 0.6, Math.PI * 0.8), M(0x8a1010, { side: THREE.DoubleSide }), 0, 0.5, -0.04, hb); }
+    const head = mesh(new THREE.SphereGeometry(0.16, 12, 10), kind === "wraith" ? M(0x050506) : skin, 0, 0.93, 0.02, hb);
     if (L.eyes) [-1, 1].forEach(s => mesh(new THREE.SphereGeometry(0.024, 6, 6), glow(L.eyes), s * 0.06, 0.95, 0.16, body));
     else [-1, 1].forEach(s => mesh(new THREE.SphereGeometry(0.018, 6, 6), M(0x1a1a1a), s * 0.055, 0.96, 0.15, body));
-    if (L.beard) { const b = mesh(new THREE.ConeGeometry(0.11, 0.3, 8), M(L.beard), 0, 0.78, 0.1, body); b.rotation.x = Math.PI; }
-    if (kind === "uruk" || kind === "giant" || kind === "general") [-1, 1].forEach(s => { const e = mesh(new THREE.ConeGeometry(0.045, 0.18, 4), skin, s * 0.19, 0.98, 0, body); e.rotation.z = -s * 1.2; });
-    if (kind === "uruk") { const hand = mesh(new THREE.CircleGeometry(0.07, 5), M(0xf4f4f4), 0, 0.93, 0.165, body); }
-    if (L.head === "crown") { mesh(new THREE.ConeGeometry(0.24, 0.5, 10, 1, true), M(0x0e0d10, { side: THREE.DoubleSide }), 0, 1.02, -0.02, body); for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; mesh(new THREE.ConeGeometry(0.025, 0.2, 4), steel, Math.sin(a) * 0.15, 1.18, Math.cos(a) * 0.15, body); } }
-    if (L.head === "hat") { mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.02, 14), M(0x7a7a80), 0, 1.06, 0, body); const h = mesh(new THREE.ConeGeometry(0.15, 0.5, 10), M(0x7a7a80), 0, 1.3, -0.03, body); h.rotation.x = -0.15; }
-    if (L.head === "hair") { mesh(new THREE.SphereGeometry(0.17, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), M(0xf0f0f0), 0, 0.95, -0.02, body); }
-    if (L.head === "horns") { mesh(new THREE.SphereGeometry(0.17, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.96, 0, body); [-1, 1].forEach(s => { const hn = mesh(new THREE.ConeGeometry(0.04, 0.22, 6), M(0xeee2c8), s * 0.18, 1.08, 0, body); hn.rotation.z = -s * 0.7; }); }
-    if (L.head === "plume") { mesh(new THREE.SphereGeometry(0.175, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.96, 0, body); const pl = mesh(new THREE.BoxGeometry(0.04, 0.12, 0.3), M(0xc01818), 0, 1.15, -0.04, body); }
-    const w = new THREE.Group(); w.position.set(0.33, 0.42, 0.06); body.add(w);
+    if (L.beard) { const b = mesh(new THREE.ConeGeometry(0.11, 0.3, 8), M(L.beard), 0, 0.78, 0.1, hb); b.rotation.x = Math.PI; }
+    if (kind === "uruk" || kind === "giant" || kind === "general") [-1, 1].forEach(s => { const e = mesh(new THREE.ConeGeometry(0.045, 0.18, 4), skin, s * 0.19, 0.98, 0, hb); e.rotation.z = -s * 1.2; });
+    if (kind === "uruk") { const hand = mesh(new THREE.CircleGeometry(0.07, 5), M(0xf4f4f4), 0, 0.93, 0.165, hb); }
+    if (L.head === "crown") { mesh(new THREE.ConeGeometry(0.24, 0.5, 10, 1, true), M(0x0e0d10, { side: THREE.DoubleSide }), 0, 1.02, -0.02, hb); for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; mesh(new THREE.ConeGeometry(0.025, 0.2, 4), steel, Math.sin(a) * 0.15, 1.18, Math.cos(a) * 0.15, hb); } }
+    if (L.head === "hat") { mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.02, 14), M(0x7a7a80), 0, 1.06, 0, hb); const h = mesh(new THREE.ConeGeometry(0.15, 0.5, 10), M(0x7a7a80), 0, 1.3, -0.03, hb); h.rotation.x = -0.15; }
+    if (L.head === "hair") { mesh(new THREE.SphereGeometry(0.17, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), M(0xf0f0f0), 0, 0.95, -0.02, hb); }
+    if (L.head === "horns") { mesh(new THREE.SphereGeometry(0.17, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.96, 0, hb); [-1, 1].forEach(s => { const hn = mesh(new THREE.ConeGeometry(0.04, 0.22, 6), M(0xeee2c8), s * 0.18, 1.08, 0, hb); hn.rotation.z = -s * 0.7; }); }
+    if (L.head === "bonecrown") { for (let k = 0; k < 5; k++) { const a = (k - 2) * 0.45; const bn = mesh(new THREE.ConeGeometry(0.03, 0.2, 4), M(0xe8dcc0), Math.sin(a) * 0.14, 1.1, Math.cos(a) * 0.1, hb); bn.rotation.z = -a * 0.5; } }
+    if (L.head === "helm") { mesh(new THREE.SphereGeometry(0.18, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.95, 0, hb); mesh(new THREE.BoxGeometry(0.03, 0.14, 0.2), steel, 0, 1.12, 0, hb); }
+    if (L.armor) { mesh(new THREE.CylinderGeometry(0.26, 0.28, 0.36, 8), steel, 0, 0.58, 0, hb); [-1, 1].forEach(s2 => mesh(new THREE.SphereGeometry(0.12, 8, 6), steel, s2 * 0.27, 0.75, 0, hb)); }
+    if (L.head === "plume") { mesh(new THREE.SphereGeometry(0.175, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.96, 0, hb); const pl = mesh(new THREE.BoxGeometry(0.04, 0.12, 0.3), M(0xc01818), 0, 1.15, -0.04, hb); }
+    const w = new THREE.Group(); w.position.set(0.33, 0.42, 0.06); hb.add(w);
     if (L.weapon === "staffdark" || L.weapon === "staffglow") { mesh(new THREE.CylinderGeometry(0.02, 0.025, 1.3, 6), L.weapon === "staffdark" ? M(0x111111) : wood, 0, 0.4, 0, w); mesh(new THREE.SphereGeometry(0.05, 8, 6), L.weapon === "staffglow" ? glow(0xeaf4ff) : M(0x222222), 0, 1.06, 0, w); }
     else if (L.weapon === "axe") { w.rotation.z = -0.3; mesh(new THREE.CylinderGeometry(0.025, 0.03, 0.6, 6), wood, 0, 0.3, 0, w); mesh(new THREE.BoxGeometry(0.02, 0.16, 0.18), steel, 0, 0.58, 0.07, w); const sh = mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 12), M(0x8a2a1a), -0.62, 0.15, 0.05, w); sh.rotation.x = Math.PI / 2; }
+    else if (L.weapon === "bigsword") { w.rotation.z = -0.2; mesh(new THREE.BoxGeometry(0.07, 0.9, 0.02), steel, 0, 0.55, 0, w); mesh(new THREE.BoxGeometry(0.24, 0.04, 0.05), M(0x3a2a1a), 0, 0.1, 0, w); }
+    else if (L.weapon === "banner") { mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.6, 6), wood, 0, 0.6, 0, w); const fl = mesh(new THREE.PlaneGeometry(0.45, 0.6), M(0x8a1010, { side: THREE.DoubleSide }), 0.24, 1.15, 0, w); mesh(new THREE.CircleGeometry(0.1, 12), glow(0xff8a1a), 0.24, 1.18, 0.005, w); }
     else if (L.weapon === "club") { w.rotation.z = -0.4; mesh(new THREE.CylinderGeometry(0.04, 0.08, 0.7, 6), wood, 0, 0.35, 0, w); mesh(new THREE.DodecahedronGeometry(0.12, 0), wood, 0, 0.72, 0, w); }
     else { w.rotation.z = -0.25; mesh(new THREE.BoxGeometry(0.04, 0.55, 0.015), steel, 0, 0.36, 0, w); mesh(new THREE.BoxGeometry(0.16, 0.03, 0.04), M(0x5a4a3a), 0, 0.08, 0, w); }
     o.scale.setScalar(L.scale);
@@ -670,7 +711,7 @@ const watch = new THREE.Group();
   const bow = mesh(new THREE.TorusGeometry(0.22, 0.015, 4, 12, Math.PI), wood, 0.15, 3.0, 0.42, watch); bow.rotation.z = -Math.PI / 2;
   watch.position.set(3.4, 0, 3.0); watch.scale.setScalar(1e-4); scene.add(watch);
 }
-const PLATZ_GHOST = GHOSTS[0]; PLATZ_GHOST.position.set(2.0, 0, -1.4);
+const PLATZ_GHOST = GHOSTS[0]; PLATZ_GHOST.position.set(0.9, 0, -1.7);
 
 // Embers + ash
 const EMB = 160, embBase = new Float32Array(EMB * 4);
@@ -764,8 +805,9 @@ function renderAt(t) {
   orcs.forEach((o, i) => {
     const t0 = 8.4 + i * 0.1, on = i < shown && m >= t0;
     o.visible = on; if (!on) return;
-    const k = ease(ramp(m, t0, t0 + 1.0));
+    const k = ease(ramp(m, t0, t0 + (o.userData.dragon ? 1.8 : 1.0)));
     o.position.lerpVectors(o.userData.start, o.userData.slot, k);
+    if (o.userData.dragon) { o.userData.wings.forEach((wg, s2) => { wg.rotation.z = (s2 ? -1 : 1) * (0.25 + (k < 1 ? 0.6 : 0.2) * Math.sin(t * (k < 1 ? 9 : 2.5))); }); o.position.y = (1 - k) * o.userData.start.y + 0.04 * Math.sin(t * 2); return; }
     o.position.y = k < 1 ? Math.abs(Math.sin((m - t0) * 14)) * 0.08 : 0.01 * Math.sin(t * 4 + i);
     const hungry = ramp(m, 11.4, 11.8) - ramp(m, 13.9, 14.3);
     o.userData.body.rotation.x = 0.3 * hungry; o.userData.body.rotation.z = 0.06 * hungry * Math.sin(t * 9 + i);
@@ -847,7 +889,7 @@ function buildTimeline() {
   const rl = document.getElementById("rolllist"); rl.textContent = "";
   RECRUITS.forEach(([name, role]) => { const d = document.createElement("div"); d.className = "rl"; d.textContent = name; const sm = document.createElement("small"); sm.textContent = role.toUpperCase(); d.append(sm); rl.append(d); });
   show("#neworks", 8.6, 11.3); pop("#neworks", 8.6);
-  tl.fromTo("#rolllist .rl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.25, ease: "power2.out", stagger: 0.16 }, warp(8.8));
+  tl.fromTo("#rolllist .rl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out", stagger: 0.075 }, warp(8.7));
   tl.fromTo("#neworksnum", { scale: 1 }, { scale: 1.2, duration: 0.15, yoyo: true, repeat: 1 }, warp(9.4));
   out("#neworks", 11.1);
   // hunger
