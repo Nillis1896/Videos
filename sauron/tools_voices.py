@@ -3,11 +3,7 @@
 import json, re, subprocess
 A = "assets/audio"
 VOICES = [
-  ("saurom", "Saurom Blackmouth", "tief, filmisch"),
-  ("mordred", "Mordred", "alt, böse, überlegen"),
-  ("tyrax", "Tyrax", "sarkastisch, gefährlich"),
   ("bartholomeus", "Bartholomeus", "maximal böse"),
-  ("azrak", "Azrak", "monströs, bedrohlich"),
 ]
 TARGET_END = 29.8          # where the last word should end after speeding up
 TAIL = 1.45                # seconds after the last word (as in the original cut)
@@ -55,7 +51,7 @@ for vid, name, desc in VOICES:
             if t <= a1: return b0 + (b1-b0) * (t-a0) / max(1e-6, a1-a0)
         return anchors[-1][1]
     inputs = ["-i", f"{A}/voices/{vid}_fast.mp3", "-i", f"{A}/dark/norm/music.wav"]
-    fl = ["[0]asplit=2[v][vk]", f"[1]volume=0.55,atrim=0:{dur},afade=t=in:d=0.3,afade=t=out:st={dur-1.6:.2f}:d=1.6[mr]", "[mr][vk]sidechaincompress=threshold=0.04:ratio=5:attack=20:release=350[m]"]
+    fl = [f"[0]apad=whole_dur={dur},asplit=2[v][vk]", f"[1]volume=0.55,atrim=0:{dur},afade=t=in:d=0.3,afade=t=out:st={dur-1.6:.2f}:d=1.6[mr]", "[mr][vk]sidechaincompress=threshold=0.04:ratio=5:attack=20:release=350[m]"]
     labels = ["[v]", "[m]"]
     for k, (fx, t, vol) in enumerate(SFX):
         inputs += ["-i", f"{A}/dark/norm/{fx}.wav"]
