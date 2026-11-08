@@ -17,9 +17,9 @@ DISPLAY = {"eins:": "1:", "O-G-Orks!": "OG-ORKS!"}
 GOLD = {"ork-armee","ork!","orks","og-orks!","top-kommentar","kommentare!","schmiede","erstes?","mauer","follower"}
 RED = {"null.","nacht","elben","elben?","schwert.","rostiges","sauron."}
 # SFX placed in the original (Adam) timeline; warped per voice
-SFX = [("slam",0.15,0.8),("whoosh",0.0,0.5),("hit",6.1,0.7),("hit",7.4,0.6),("hit",9.6,0.7),("whoosh",12.8,0.6),
-       ("sting",14.4,0.6),("hit",15.3,0.7),("horn",18.3,0.7),("whoosh",21.1,0.6),("hit",23.95,0.7),("hit",27.3,0.7),
-       ("forge",29.6,0.7),("forge",31.2,0.7),("hit",33.0,0.8)]
+SFX = [("slam",0.15,0.75),("whoosh",0.0,0.45),("hit",6.1,0.45),("hit",7.4,0.4),("hit",9.6,0.45),("whoosh",12.8,0.4),
+       ("sting",14.4,0.45),("hit",15.3,0.45),("horn",18.3,0.45),("whoosh",21.1,0.4),("hit",23.95,0.45),("hit",27.3,0.45),
+       ("forge",29.6,0.45),("forge",31.2,0.45),("hit",33.0,0.45)]
 
 def caps_for(words):
     chunks, cur = [], []
@@ -34,12 +34,19 @@ def caps_for(words):
         out.append({"s": round(s,3), "e": round(e,3), "w": [[DISPLAY.get(w["w"], w["w"]).upper(), "g" if w["w"].lower() in GOLD else "r" if w["w"].lower() in RED else ""] for w in c]})
     return out
 
+
+import os
+os.makedirs(f"{A}/dark/norm", exist_ok=True)
+subprocess.run(["ffmpeg","-v","error","-y","-i",f"{A}/dark/music.mp3","-af","dynaudnorm=f=400:g=31:p=0.9:m=20:s=12,loudnorm=I=-20:TP=-2:LRA=4","-ar","44100",f"{A}/dark/norm/music.wav"], check=True)
+for fx in ["hit","whoosh","horn","forge","sting","slam"]:
+    subprocess.run(["ffmpeg","-v","error","-y","-i",f"{A}/dark/{fx}.mp3","-af","loudnorm=I=-18:TP=-3","-ar","44100",f"{A}/dark/norm/{fx}.wav"], check=True)
+
 data = []
 for vid, name, desc in VOICES:
     words = json.load(open(f"{A}/voices/{vid}.json"))
     assert len(words) == len(adam), vid
     f = words[-1]["e"] / TARGET_END
-    subprocess.run(["ffmpeg","-v","error","-y","-i",f"{A}/voices/{vid}.mp3","-filter:a",f"atempo={f:.4f}","-b:a","128k",f"{A}/voices/{vid}_fast.mp3"], check=True)
+    subprocess.run(["ffmpeg","-v","error","-y","-i",f"{A}/voices/{vid}.mp3","-filter:a",f"atempo={f:.4f},loudnorm=I=-15:TP=-1.5","-b:a","128k",f"{A}/voices/{vid}_fast.mp3"], check=True)
     fw = [{"w": w["w"], "s": w["s"]/f, "e": w["e"]/f} for w in words]
     dur = round(fw[-1]["e"] + TAIL, 2)
     anchors = [[0.0, 0.0]] + [[round(a["s"],3), round(b["s"],3)] for a, b in zip(adam, fw)] + [[ADAM_END, dur]]
@@ -47,11 +54,11 @@ for vid, name, desc in VOICES:
         for (a0,b0),(a1,b1) in zip(anchors, anchors[1:]):
             if t <= a1: return b0 + (b1-b0) * (t-a0) / max(1e-6, a1-a0)
         return anchors[-1][1]
-    inputs = ["-i", f"{A}/voices/{vid}_fast.mp3", "-i", f"{A}/dark/music.mp3"]
-    fl = [f"[1]volume=0.32,atrim=0:{dur},afade=t=out:st={dur-1.6:.2f}:d=1.6[m]"]
-    labels = ["[0]", "[m]"]
+    inputs = ["-i", f"{A}/voices/{vid}_fast.mp3", "-i", f"{A}/dark/norm/music.wav"]
+    fl = ["[0]asplit=2[v][vk]", f"[1]volume=0.55,atrim=0:{dur},afade=t=in:d=0.3,afade=t=out:st={dur-1.6:.2f}:d=1.6[mr]", "[mr][vk]sidechaincompress=threshold=0.04:ratio=5:attack=20:release=350[m]"]
+    labels = ["[v]", "[m]"]
     for k, (fx, t, vol) in enumerate(SFX):
-        inputs += ["-i", f"{A}/dark/{fx}.mp3"]
+        inputs += ["-i", f"{A}/dark/norm/{fx}.wav"]
         ms = int(warp(t) * 1000)
         fl.append(f"[{k+2}]volume={vol},adelay={ms}|{ms}[s{k}]"); labels.append(f"[s{k}]")
     fl.append("".join(labels) + f"amix=inputs={len(labels)}:normalize=0:duration=longest,atrim=0:{dur},alimiter=limit=0.95[out]")
