@@ -1,0 +1,40 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #ffce00; overflow: hidden; font-family: "Archivo Black", sans-serif; }
+    #outro-circle { position: absolute; left: 540px; top: 760px; width: 3600px; height: 3600px; margin: -1800px 0 0 -1800px; border-radius: 50%; background: #0b0b0d; }
+    .outro-stripe { position: absolute; left: -100px; width: 1280px; height: 70px; }
+    #outro-s1 { top: 1440px; background: #3a3a3a; }
+    #outro-s2 { top: 1510px; background: #dd0000; }
+    #outro-s3 { top: 1580px; background: #ffce00; }
+    #outro-name { position: absolute; left: 0; right: 0; top: 470px; text-align: center; color: #fff; font-size: 300px; line-height: 1; letter-spacing: -0.03em; }
+    #outro-place { position: absolute; left: 0; right: 0; top: 860px; display: flex; justify-content: center; align-items: center; gap: 24px; }
+    #outro-pin { width: 70px; height: 95px; }
+    #outro-placetext { color: #ffce00; font-size: 84px; letter-spacing: -0.01em; }
+    #outro-tag { position: absolute; left: 0; right: 0; top: 1040px; text-align: center; color: rgba(255,255,255,.75); font-family: "Montserrat", sans-serif; font-weight: 700; font-size: 52px; letter-spacing: 0.2em; }
+  </style>
+  <div id="root" data-composition-id="outro" data-width="1080" data-height="1920">
+    <div id="outro-circle" data-layout-ignore></div>
+    <div id="outro-s1" class="outro-stripe" data-layout-ignore></div>
+    <div id="outro-s2" class="outro-stripe" data-layout-ignore></div>
+    <div id="outro-s3" class="outro-stripe" data-layout-ignore></div>
+    <div id="outro-name">NILS</div>
+    <div id="outro-place">
+      <svg id="outro-pin" viewBox="0 0 200 270"><path d="M100 0C45 0 0 44 0 99c0 74 100 171 100 171s100-97 100-171C200 44 155 0 100 0z" fill="#dd0000"/><circle cx="100" cy="98" r="44" fill="#fff"/></svg>
+      <div id="outro-placetext">NIEDERSACHSEN</div>
+    </div>
+    <div id="outro-tag">SAG HALLO!</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#outro-circle", { scale: 0 }, { scale: 1, duration: 0.6, ease: "power4.out" }, 0);
+    tl.fromTo("#outro-name", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2.5)" }, 0.2);
+    tl.fromTo("#outro-pin", { y: -300, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "bounce.out" }, 0.55);
+    tl.fromTo("#outro-placetext", { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.6);
+    tl.fromTo("#outro-tag", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.75);
+    tl.fromTo("#outro-s1", { x: 1300, rotation: -6 }, { x: 0, rotation: -6, duration: 0.5, ease: "power4.out" }, 0.4);
+    tl.fromTo("#outro-s2", { x: -1300, rotation: -6 }, { x: 0, rotation: -6, duration: 0.5, ease: "power4.out" }, 0.48);
+    tl.fromTo("#outro-s3", { x: 1300, rotation: -6 }, { x: 0, rotation: -6, duration: 0.5, ease: "power4.out" }, 0.56);
+    tl.fromTo("#outro-name", { y: 0 }, { y: -12, duration: 1.2, ease: "sine.inOut" }, 1.0);
+    window.__timelines["outro"] = tl;
+  </script>
+</template>

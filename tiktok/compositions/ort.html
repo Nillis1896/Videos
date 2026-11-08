@@ -1,0 +1,56 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #0b0b0d; overflow: hidden; font-family: "Archivo Black", sans-serif; }
+    #ort-wipe { position: absolute; inset: 0; background: #dd0000; }
+    #ort-wipe2 { position: absolute; inset: 0; background: #ffce00; }
+    #ort-bg { position: absolute; inset: 0; background: radial-gradient(circle at 50% 38%, #2a0606 0%, #0b0b0d 60%); }
+    .ort-ring { position: absolute; left: 540px; top: 600px; width: 300px; height: 300px; margin: -150px 0 0 -150px; border: 8px solid #ffce00; border-radius: 50%; }
+    #ort-pin { position: absolute; left: 440px; top: 330px; width: 200px; height: 270px; }
+    #ort-shadow { position: absolute; left: 470px; top: 588px; width: 140px; height: 28px; border-radius: 50%; background: rgba(0,0,0,.6); }
+    #ort-wohne { position: absolute; left: 0; right: 0; top: 700px; text-align: center; color: #fff; font-family: "Montserrat", sans-serif; font-weight: 800; font-size: 80px; letter-spacing: 0.12em; }
+    .ort-word { position: absolute; left: 0; right: 0; text-align: center; font-size: 180px; line-height: 1; letter-spacing: -0.02em; }
+    .ort-word span { display: inline-block; }
+    #ort-w1 { top: 830px; color: #fff; }
+    #ort-w2 { top: 1010px; color: #ffce00; }
+  </style>
+  <div id="root" data-composition-id="ort" data-width="1080" data-height="1920">
+    <div id="ort-bg" data-layout-ignore></div>
+    <div id="ort-ring1" class="ort-ring" data-layout-ignore></div>
+    <div id="ort-ring2" class="ort-ring" data-layout-ignore></div>
+    <div id="ort-shadow" data-layout-ignore></div>
+    <svg id="ort-pin" viewBox="0 0 200 270" data-layout-ignore>
+      <path d="M100 0C45 0 0 44 0 99c0 74 100 171 100 171s100-97 100-171C200 44 155 0 100 0z" fill="#dd0000"/>
+      <circle cx="100" cy="98" r="44" fill="#fff"/>
+    </svg>
+    <div id="ort-wohne">WOHNE IN</div>
+    <div id="ort-w1" class="ort-word"><span>N</span><span>I</span><span>E</span><span>D</span><span>E</span><span>R</span><span>-</span></div>
+    <div id="ort-w2" class="ort-word"><span>S</span><span>A</span><span>C</span><span>H</span><span>S</span><span>E</span><span>N</span></div>
+    <div id="ort-wipe2" data-layout-ignore></div>
+    <div id="ort-wipe" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Wipe in
+    tl.fromTo("#ort-wipe", { yPercent: 0 }, { yPercent: -100, duration: 0.45, ease: "power4.inOut" }, 0.02);
+    tl.fromTo("#ort-wipe2", { yPercent: 0 }, { yPercent: -100, duration: 0.45, ease: "power4.inOut" }, 0.1);
+    // Pin drops and bounces
+    tl.set("#ort-pin", { y: -700, scaleX: 1, scaleY: 1, transformOrigin: "50% 100%" }, 0);
+    tl.to("#ort-pin", { y: 0, duration: 0.5, ease: "power3.in" }, 0.35);
+    tl.to("#ort-pin", { scaleY: 0.82, scaleX: 1.12, duration: 0.08, ease: "power1.out" }, 0.85);
+    tl.to("#ort-pin", { scaleY: 1, scaleX: 1, y: -40, duration: 0.22, ease: "power2.out" }, 0.93);
+    tl.to("#ort-pin", { y: 0, duration: 0.2, ease: "bounce.out" }, 1.15);
+    tl.fromTo("#ort-shadow", { scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power3.in" }, 0.35);
+    tl.fromTo("#ort-ring1", { scale: 0.2, opacity: 1 }, { scale: 2.6, opacity: 0, duration: 1, ease: "power2.out" }, 0.85);
+    tl.fromTo("#ort-ring2", { scale: 0.2, opacity: 1 }, { scale: 2.6, opacity: 0, duration: 1, ease: "power2.out" }, 1.1);
+    // Text
+    tl.fromTo("#ort-wohne", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.9);
+    tl.fromTo("#ort-w1 span", { opacity: 0, y: 140, rotationX: -90 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.45, ease: "back.out(2)", stagger: 0.05 }, 1.15);
+    tl.fromTo("#ort-w2 span", { opacity: 0, y: 140, rotationX: -90 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.45, ease: "back.out(2)", stagger: 0.05 }, 1.45);
+    tl.fromTo("#ort-w2", { scale: 1 }, { scale: 1.06, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1 }, 2.2);
+    // Exit
+    tl.to("#ort-pin", { y: -260, scale: 0.5, opacity: 0, duration: 0.35, ease: "power3.in" }, 3.55);
+    tl.to("#ort-shadow", { opacity: 0, duration: 0.2 }, 3.55);
+    tl.to(["#ort-wohne", "#ort-w1", "#ort-w2"], { x: -1100, duration: 0.4, ease: "power3.in", stagger: 0.04 }, 3.5);
+    window.__timelines["ort"] = tl;
+  </script>
+</template>

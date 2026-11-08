@@ -1,0 +1,47 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #0b0b0d; overflow: hidden; font-family: "Archivo Black", sans-serif; }
+    #intro-grid { position: absolute; inset: -200px; background-image:
+      linear-gradient(rgba(255,255,255,.05) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 2px, transparent 2px);
+      background-size: 120px 120px; }
+    .intro-bar { position: absolute; left: 0; height: 28px; width: 1080px; }
+    #intro-bar1 { top: 300px; background: #3a3a3a; }
+    #intro-bar2 { top: 300px; background: #dd0000; }
+    #intro-bar3 { top: 300px; background: #ffce00; }
+    #intro-hi { position: absolute; left: 0; right: 0; top: 360px; text-align: center; color: #ffce00; font-size: 200px; letter-spacing: -0.02em; }
+    #intro-ich { position: absolute; left: 0; right: 0; top: 640px; text-align: center; color: #fff; font-family: "Montserrat", sans-serif; font-weight: 800; font-size: 84px; letter-spacing: 0.12em; }
+    #intro-name { position: absolute; left: 0; right: 0; top: 760px; text-align: center; color: #fff; font-size: 330px; line-height: 1; letter-spacing: -0.03em; }
+    #intro-name span { display: inline-block; }
+    #intro-line { position: absolute; left: 140px; top: 1110px; width: 800px; height: 26px; background: #dd0000; transform-origin: left center; }
+  </style>
+  <div id="root" data-composition-id="intro" data-width="1080" data-height="1920">
+    <div id="intro-grid" data-layout-ignore></div>
+    <div id="intro-bar1" class="intro-bar" data-layout-ignore></div>
+    <div id="intro-bar2" class="intro-bar" data-layout-ignore></div>
+    <div id="intro-bar3" class="intro-bar" data-layout-ignore></div>
+    <div id="intro-hi">HI!</div>
+    <div id="intro-ich">ICH BIN</div>
+    <div id="intro-name"><span>N</span><span>I</span><span>L</span><span>S</span></div>
+    <div id="intro-line" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#intro-grid", { y: 0 }, { y: 120, duration: 3.6, ease: "none" }, 0);
+    // Frame 0 already shows the hook
+    tl.fromTo("#intro-hi", { scale: 1.15, rotation: -4 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(3)" }, 0);
+    tl.fromTo("#intro-bar1", { x: -1080 }, { x: 0, duration: 0.45, ease: "power4.out" }, 0.05);
+    tl.fromTo("#intro-bar2", { x: -1080 }, { x: 0, y: 34, duration: 0.45, ease: "power4.out" }, 0.12);
+    tl.fromTo("#intro-bar3", { x: -1080 }, { x: 0, y: 68, duration: 0.45, ease: "power4.out" }, 0.19);
+    tl.fromTo("#intro-ich", { opacity: 0, y: 60, scale: 1.4 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 0.55);
+    tl.fromTo("#intro-name span", { opacity: 0, y: 220, scale: 0.4, rotation: 12 },
+      { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.55, ease: "back.out(2.2)", stagger: 0.09 }, 0.95);
+    tl.fromTo("#intro-line", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power4.inOut" }, 1.6);
+    tl.to("#intro-name span", { y: -16, duration: 0.18, ease: "power2.out", stagger: 0.05, yoyo: true, repeat: 1 }, 2.15);
+    // Exit
+    tl.to(["#intro-hi", "#intro-ich"], { y: -200, opacity: 0, duration: 0.35, ease: "power3.in" }, 3.15);
+    tl.to("#intro-name", { scale: 3, opacity: 0, duration: 0.4, ease: "power3.in" }, 3.15);
+    tl.to("#intro-line", { scaleX: 0, transformOrigin: "right center", duration: 0.3, ease: "power3.in" }, 3.1);
+    window.__timelines["intro"] = tl;
+  </script>
+</template>
