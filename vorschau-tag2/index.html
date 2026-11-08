@@ -215,6 +215,11 @@
           <div id="roll" class="plate"><div id="rolllist"></div></div>
         </div>
 
+        <div id="righthand" class="ov" style="top:330px">
+          <div class="rune outline" style="color:#fff;font-size:70px">MEINE</div>
+          <div class="rune molten" style="font-size:96px">RECHTE HAND?</div>
+        </div>
+
         <div id="food" class="ov" style="top:330px">
           <div class="glowwrap red"><div class="plate badge"><svg width="60" height="60"><use href="#i-food"/></svg><span class="engrave" style="color:#ffb0a0">ESSEN: 0</span></div></div>
           <div class="rune" style="font-size:58px;margin-top:18px"><span class="outline" style="color:#fff">DIE ORKS HABEN </span><span class="blood">HUNGER</span></div>
@@ -280,7 +285,7 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js";
 
-const VOICES = [{"id":"tag2","name":"Bartholomeus","desc":"psycho","src":"audio/tag2.mp3","dur":32.95,"anchors":[[0.0,0.0],[0.0,0.0],[0.323,0.323],[1.161,1.097],[1.355,1.29],[1.581,1.516],[2.323,2.323],[2.645,2.645],[2.903,2.903],[3.032,3.032],[3.323,3.29],[3.935,4.0],[4.194,4.258],[4.323,4.387],[4.516,4.613],[5.29,6.903],[5.484,7.097],[5.806,7.419],[6.0,7.613],[6.839,8.516],[7.161,8.839],[7.355,9.097],[7.548,9.29],[8.387,10.129],[8.71,10.387],[8.968,10.645],[9.355,10.968],[10.0,11.613],[10.258,11.871],[10.645,12.258],[11.355,12.968],[11.677,13.355],[12.129,13.677],[12.387,14.0],[13.032,14.774],[13.742,15.548],[14.258,16.129],[14.516,16.387],[14.839,16.774],[15.097,17.161],[15.29,17.419],[15.419,17.613],[16.129,18.452],[16.452,18.71],[17.01,19.14],[17.129,19.29],[17.355,19.548],[17.484,19.699],[17.806,19.935],[18.0,20.065],[18.097,20.161],[18.323,20.484],[19.097,21.097],[19.355,21.355],[19.548,21.57],[19.677,21.677],[19.806,21.871],[20.452,23.226],[20.645,23.419],[21.323,24.0],[22.0,24.774],[22.323,25.097],[22.71,25.419],[22.871,25.656],[23.032,25.806],[23.226,26.0],[23.677,26.516],[23.935,26.774],[24.194,27.032],[24.645,27.516],[24.774,27.677],[25.355,28.194],[25.548,28.387],[25.677,28.516],[26.258,30.065],[26.581,30.355],[26.645,30.452],[26.71,30.581],[29.1,32.95]],"caps":[{"s":0.0,"e":1.097,"w":[["TAG",""],["2:",""]]},{"s":1.097,"e":2.323,"w":[["IHR",""],["HABT",""],["ENTSCHIEDEN.",""]]},{"s":2.323,"e":3.032,"w":[["WIR",""],["HABEN",""],["DIE",""]]},{"s":3.032,"e":4.0,"w":[["MAUER","g"],["GEBAUT.",""]]},{"s":4.0,"e":4.613,"w":[["UND",""],["SIE",""],["HAT",""]]},{"s":4.613,"e":5.826,"w":[["GEHALTEN!","g"]]},{"s":6.903,"e":7.613,"w":[["DIE",""],["ELBEN","r"],["SIND",""]]},{"s":7.613,"e":8.516,"w":[["ABGEZOGEN.",""]]},{"s":8.516,"e":9.29,"w":[["UND",""],["IHR",""],["SEID",""]]},{"s":9.29,"e":10.129,"w":[["GEKOMMEN:",""]]},{"s":10.129,"e":10.968,"w":[["SO",""],["VIELE",""],["NEUE",""]]},{"s":10.968,"e":11.613,"w":[["ORKS!","g"]]},{"s":11.613,"e":12.258,"w":[["MEINE",""],["ARMEE","g"]]},{"s":12.258,"e":12.968,"w":[["WÄCHST.","g"]]},{"s":12.968,"e":14.0,"w":[["ABER",""],["ORKS",""],["HABEN",""]]},{"s":14.0,"e":14.774,"w":[["HUNGER.","r"]]},{"s":14.774,"e":15.548,"w":[["ESSEN:",""]]},{"s":15.548,"e":16.129,"w":[["NULL.","r"]]},{"s":16.129,"e":17.161,"w":[["UND",""],["MORGEN",""],["NACHT","r"]]},{"s":17.161,"e":18.452,"w":[["KOMMEN",""],["DIE",""],["REITER.","r"]]},{"s":18.452,"e":19.14,"w":[["FOLG",""],["JETZT,",""]]},{"s":19.14,"e":19.548,"w":[["DANN",""],["STEHST",""]]},{"s":19.548,"e":20.065,"w":[["DU",""],["MORGEN",""],["AUCH",""]]},{"s":20.065,"e":21.097,"w":[["IN",""],["MEINER",""],["ARMEE!","g"]]},{"s":21.097,"e":21.677,"w":[["WAS",""],["BAUEN",""],["WIR",""]]},{"s":21.677,"e":23.116,"w":[["ALS",""],["NÄCHSTES?","g"]]},{"s":23.226,"e":24.0,"w":[["DER",""],["TOP-KOMMENTAR","g"]]},{"s":24.0,"e":24.774,"w":[["ENTSCHEIDET.",""]]},{"s":24.774,"e":25.419,"w":[["EINEN",""],["STALL,","g"]]},{"s":25.419,"e":26.0,"w":[["DAMIT",""],["WIR",""],["ESSEN",""]]},{"s":26.0,"e":26.516,"w":[["HABEN?",""]]},{"s":26.516,"e":27.516,"w":[["ODER",""],["EINEN",""],["WACHTURM","g"]]},{"s":27.516,"e":28.194,"w":[["MIT",""],["BOGENSCHÜTZEN",""]]},{"s":28.194,"e":29.632,"w":[["GEGEN",""],["DIE",""],["REITER?","r"]]},{"s":30.065,"e":30.452,"w":[["SCHREIB'S",""],["IN",""]]},{"s":30.452,"e":31.955,"w":[["DIE",""],["KOMMENTARE!","g"]]}]}];
+const VOICES = [{"id":"tag2","name":"Bartholomeus","desc":"psycho","src":"audio/tag2.mp3","dur":37.92,"rh":[12.402,18.285],"rhWer":15.29,"rhWie":16.903,"anchors":[[0.0,0.0],[0.0,0.0],[0.323,0.323],[1.161,1.161],[1.355,1.355],[1.581,1.548],[2.323,2.387],[2.645,2.71],[2.903,2.968],[3.032,3.097],[3.323,3.355],[3.935,4.097],[4.194,4.258],[4.323,4.387],[4.516,4.613],[5.29,6.645],[5.484,6.839],[5.806,7.129],[6.0,7.387],[6.839,8.258],[7.161,8.516],[7.355,8.774],[7.548,8.968],[8.387,9.742],[8.71,10.0],[8.968,10.258],[9.355,10.581],[10.0,11.226],[10.258,11.516],[10.645,11.806],[11.2,12.402],[11.2,18.285],[11.355,18.365],[11.677,18.581],[12.129,18.903],[12.387,19.161],[13.032,19.871],[13.742,20.516],[14.258,21.097],[14.516,21.29],[14.839,21.677],[15.097,22.0],[15.29,22.258],[15.419,22.452],[16.129,23.226],[16.452,23.581],[17.01,24.0],[17.129,24.161],[17.355,24.387],[17.484,24.516],[17.806,24.839],[18.0,25.0],[18.097,25.097],[18.323,25.355],[19.097,26.065],[19.355,26.258],[19.548,26.473],[19.677,26.581],[19.806,26.774],[20.452,28.129],[20.645,28.258],[21.323,28.903],[22.0,29.742],[22.323,30.0],[22.71,30.344],[22.871,30.516],[23.032,30.645],[23.226,30.968],[23.677,31.452],[23.935,31.742],[24.194,32.0],[24.645,32.452],[24.774,32.581],[25.355,33.161],[25.548,33.419],[25.677,33.548],[26.258,35.032],[26.581,35.387],[26.645,35.452],[26.71,35.548],[29.1,37.92]],"caps":[{"s":0.0,"e":1.161,"w":[["TAG",""],["2:",""]]},{"s":1.161,"e":2.387,"w":[["IHR",""],["HABT",""],["ENTSCHIEDEN.",""]]},{"s":2.387,"e":3.097,"w":[["WIR",""],["HABEN",""],["DIE",""]]},{"s":3.097,"e":4.097,"w":[["MAUER","g"],["GEBAUT.",""]]},{"s":4.097,"e":4.613,"w":[["UND",""],["SIE",""],["HAT",""]]},{"s":4.613,"e":5.761,"w":[["GEHALTEN!","g"]]},{"s":6.645,"e":7.387,"w":[["DIE",""],["ELBEN","r"],["SIND",""]]},{"s":7.387,"e":8.258,"w":[["ABGEZOGEN.",""]]},{"s":8.258,"e":8.968,"w":[["UND",""],["IHR",""],["SEID",""]]},{"s":8.968,"e":9.742,"w":[["GEKOMMEN:",""]]},{"s":9.742,"e":10.581,"w":[["SO",""],["VIELE",""],["NEUE",""]]},{"s":10.581,"e":11.226,"w":[["ORKS!","g"]]},{"s":11.226,"e":11.806,"w":[["MEINE",""],["ARMEE","g"]]},{"s":11.806,"e":12.452,"w":[["WÄCHST.","g"]]},{"s":12.452,"e":13.161,"w":[["UND",""],["EINER",""],["VON",""]]},{"s":13.161,"e":13.935,"w":[["EUCH",""],["WIRD",""],["MEINE",""]]},{"s":13.935,"e":14.968,"w":[["RECHTE","g"],["HAND.","g"]]},{"s":14.968,"e":16.374,"w":[["ABER",""],["WER?","r"]]},{"s":16.903,"e":17.613,"w":[["WIE",""],["ENTSCHEIDE",""]]},{"s":17.613,"e":18.365,"w":[["ICH",""],["MICH?",""]]},{"s":18.365,"e":19.161,"w":[["ABER",""],["ORKS",""],["HABEN",""]]},{"s":19.161,"e":19.871,"w":[["HUNGER.","r"]]},{"s":19.871,"e":20.516,"w":[["ESSEN:",""]]},{"s":20.516,"e":21.097,"w":[["NULL.","r"]]},{"s":21.097,"e":22.0,"w":[["UND",""],["MORGEN",""],["NACHT","r"]]},{"s":22.0,"e":23.226,"w":[["KOMMEN",""],["DIE",""],["REITER.","r"]]},{"s":23.226,"e":24.0,"w":[["FOLG",""],["JETZT,",""]]},{"s":24.0,"e":24.387,"w":[["DANN",""],["STEHST",""]]},{"s":24.387,"e":25.0,"w":[["DU",""],["MORGEN",""],["AUCH",""]]},{"s":25.0,"e":26.065,"w":[["IN",""],["MEINER",""],["ARMEE!","g"]]},{"s":26.065,"e":26.581,"w":[["WAS",""],["BAUEN",""],["WIR",""]]},{"s":26.581,"e":27.923,"w":[["ALS",""],["NÄCHSTES?","g"]]},{"s":28.129,"e":28.903,"w":[["DER",""],["TOP-KOMMENTAR","g"]]},{"s":28.903,"e":29.742,"w":[["ENTSCHEIDET.",""]]},{"s":29.742,"e":30.344,"w":[["EINEN",""],["STALL,","g"]]},{"s":30.344,"e":30.968,"w":[["DAMIT",""],["WIR",""],["ESSEN",""]]},{"s":30.968,"e":31.452,"w":[["HABEN?",""]]},{"s":31.452,"e":32.452,"w":[["ODER",""],["EINEN",""],["WACHTURM","g"]]},{"s":32.452,"e":33.161,"w":[["MIT",""],["BOGENSCHÜTZEN",""]]},{"s":33.161,"e":34.568,"w":[["GEGEN",""],["DIE",""],["REITER?","r"]]},{"s":35.032,"e":35.452,"w":[["SCHREIB'S",""],["IN",""]]},{"s":35.452,"e":36.923,"w":[["DIE",""],["KOMMENTARE!","g"]]}]}];
 // neue Follower seit Tag 1: Name und Rolle (Rolle bestimmt das Aussehen)
 const RECRUITS = [
   ["Lucas", "Hexenkönig", "wraith"], ["Timon", "Hexenkönig", "wraith"], ["Leon", "Saruman", "white"], ["RBL", "Riese", "giant"],
@@ -711,6 +716,10 @@ const watch = new THREE.Group();
   const bow = mesh(new THREE.TorusGeometry(0.22, 0.015, 4, 12, Math.PI), wood, 0.15, 3.0, 0.42, watch); bow.rotation.z = -Math.PI / 2;
   watch.position.set(3.4, 0, 3.0); watch.scale.setScalar(1e-4); scene.add(watch);
 }
+// golden question marks over the right-hand candidates
+const goldQ = canvasTex(128, 128, (c, w, h) => { c.font = "bold 110px Georgia"; c.textAlign = "center"; c.textBaseline = "middle"; c.lineWidth = 10; c.strokeStyle = "#2a1200"; c.strokeText("?", w / 2, h / 2 + 6); const g = c.createLinearGradient(0, 10, 0, 118); g.addColorStop(0, "#fff3c0"); g.addColorStop(0.5, "#ffb02a"); g.addColorStop(1, "#c04000"); c.fillStyle = g; c.fillText("?", w / 2, h / 2 + 6); });
+const RH_PICKS = [0, 1, 7, 11, 12].map(i => { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: goldQ, depthTest: false, fog: false })); sp.visible = false; sp.renderOrder = 5; scene.add(sp); return { i, sp }; });
+const _box = new THREE.Box3();
 const PLATZ_GHOST = GHOSTS[0]; PLATZ_GHOST.position.set(0.9, 0, -1.7);
 
 // Embers + ash
@@ -828,6 +837,24 @@ function renderAt(t) {
   stall.scale.setScalar(live(m, 22.3, 26.25) ? Math.max(1e-4, popIn(m, 22.3, 0.45)) : 1e-4);
   watch.scale.setScalar(live(m, 24.1, 26.25) ? Math.max(1e-4, popIn(m, 24.1, 0.45)) : 1e-4);
 
+  // "Wer wird meine rechte Hand?": camera sweeps over the candidates, Sauron ponders
+  const RW = V.rh, inRH = RW && t >= RW[0] && t < RW[1];
+  if (inRH) {
+    const u = ease(ramp(t, RW[0], RW[1])), a = -0.6 + u * 1.2;
+    camera.position.set(Math.sin(a) * 9.4, 4.8 - u * 0.6, Math.cos(a) * 9.4 + 0.4);
+    camera.lookAt(0, 1.3, -1.6);
+    sau.rotation.z = t >= V.rhWie ? 0.13 * Math.sin((t - V.rhWie) * 3.2) : 0;
+    sau.rotation.y = 0.35 * Math.sin(u * Math.PI * 2);
+  } else { sau.rotation.z = 0; sau.rotation.y = 0; }
+  RH_PICKS.forEach(({ i, sp }, k) => {
+    const o = orcs[i]; const on = inRH && o && o.visible;
+    sp.visible = !!on; if (!on) return;
+    _box.setFromObject(o);
+    const pop = popIn(t, RW[0] + 0.35 + k * 0.28, 0.35), s2 = (o.userData.dragon ? 1.3 : 0.8) * pop * (1 + 0.08 * Math.sin(t * 6 + k));
+    sp.position.set((_box.min.x + _box.max.x) / 2, _box.max.y + 0.45 + 0.08 * Math.sin(t * 3 + k), (_box.min.z + _box.max.z) / 2);
+    sp.scale.set(Math.max(0.001, s2), Math.max(0.001, s2), 1);
+  });
+
   const ep = embGeo.attributes.position;
   for (let i = 0; i < EMB; i++) { const b = i * 4, y = (embBase[b + 1] + t * embBase[b + 3]) % 12; ep.setXYZ(i, embBase[b] + Math.sin(t * 0.8 + i) * 0.3, y, embBase[b + 2]); }
   ep.needsUpdate = true;
@@ -892,6 +919,11 @@ function buildTimeline() {
   tl.fromTo("#rolllist .rl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out", stagger: 0.075 }, warp(8.7));
   tl.fromTo("#neworksnum", { scale: 1 }, { scale: 1.2, duration: 0.15, yoyo: true, repeat: 1 }, warp(9.4));
   out("#neworks", 11.1);
+  // right hand
+  if (V.rh) { tl.set("#righthand", { visibility: "visible" }, V.rh[0] + 0.2); tl.set("#righthand", { visibility: "hidden" }, V.rh[1]);
+    tl.fromTo("#righthand", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.2)" }, V.rh[0] + 0.2);
+    tl.fromTo("#righthand .molten", { rotation: 0 }, { rotation: 3, duration: 0.1, yoyo: true, repeat: 5 }, V.rhWer);
+    tl.to("#righthand", { scale: 0.7, opacity: 0, duration: 0.18, ease: "power2.in" }, V.rh[1] - 0.2); }
   // hunger
   show("#food", 13.0, 14.3); pop("#food", 13.0); out("#food", 14.1);
   // riders
