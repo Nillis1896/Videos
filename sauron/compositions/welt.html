@@ -1,0 +1,363 @@
+<template>
+  <style>
+    @font-face { font-family: "LilitaOne"; src: url("assets/fonts/LilitaOne.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; overflow: hidden; background: #1a0a0a; }
+    #welt-cam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    #welt-svg { position: absolute; left: -540px; top: -960px; width: 2160px; height: 3840px; }
+  </style>
+  <div id="root" data-composition-id="welt" data-width="1080" data-height="1920" data-layout-allow-overflow>
+    <div id="welt-cam" data-layout-ignore>
+      <svg id="welt-svg" viewBox="-540 -960 2160 3840" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="welt-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#2a0f2e"/>
+            <stop offset="0.55" stop-color="#7a1f1a"/>
+            <stop offset="0.85" stop-color="#e0621e"/>
+            <stop offset="1" stop-color="#ffb04a"/>
+          </linearGradient>
+          <linearGradient id="welt-ground" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3a2a26"/>
+            <stop offset="1" stop-color="#1e1513"/>
+          </linearGradient>
+          <radialGradient id="welt-eyeglow">
+            <stop offset="0" stop-color="#ffd27a" stop-opacity="0.95"/>
+            <stop offset="0.35" stop-color="#ff7a1a" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#ff3d00" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="welt-fireglow">
+            <stop offset="0" stop-color="#ffb347" stop-opacity="0.8"/>
+            <stop offset="1" stop-color="#ff5a00" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="welt-elfglow">
+            <stop offset="0" stop-color="#bfe0ff" stop-opacity="0.7"/>
+            <stop offset="1" stop-color="#6fa8ff" stop-opacity="0"/>
+          </radialGradient>
+          <!-- Ork placeholder: dashed silhouette with "?" -->
+          <symbol id="welt-ghost" viewBox="-80 -170 160 175" overflow="visible">
+            <g fill="rgba(255,255,255,0.10)" stroke="#ffffff" stroke-width="5" stroke-dasharray="12 9" stroke-linecap="round">
+              <path d="M-38 -150 L-62 -168 L-44 -126 Z"/>
+              <path d="M38 -150 L62 -168 L44 -126 Z"/>
+              <ellipse cx="0" cy="-128" rx="42" ry="38"/>
+              <path d="M-44 -88 Q0 -100 44 -88 L50 -30 Q0 -20 -50 -30 Z"/>
+              <path d="M-50 -82 L-70 -36"/>
+              <path d="M50 -82 L70 -36"/>
+              <path d="M-26 -28 L-26 0 M26 -28 L26 0"/>
+            </g>
+            <text x="0" y="-112" text-anchor="middle" font-family="LilitaOne" font-size="48" fill="#ffffff">?</text>
+          </symbol>
+          <!-- Elf: slender silhouette with glowing spear -->
+          <symbol id="welt-elf" viewBox="-30 -110 60 112" overflow="visible">
+            <ellipse cx="0" cy="-50" rx="38" ry="60" fill="url(#welt-elfglow)"/>
+            <path d="M14 -104 L18 0" stroke="#d8ecff" stroke-width="3"/>
+            <path d="M18 -114 L12 -100 L22 -100 Z" fill="#e8f6ff"/>
+            <path d="M-9 -80 L-22 -92 L-12 -74 Z M9 -80 L22 -92 L12 -74 Z" fill="#1d2a44"/>
+            <ellipse cx="0" cy="-76" rx="11" ry="12" fill="#1d2a44"/>
+            <path d="M-11 -76 Q-14 -50 -10 -40 L10 -40 Q14 -50 11 -76 Z" fill="#33507a"/>
+            <path d="M-14 -62 L14 -62 L18 -10 L-18 -10 Z" fill="#1d2a44"/>
+            <path d="M-8 -10 L-8 0 M8 -10 L8 0" stroke="#1d2a44" stroke-width="6"/>
+          </symbol>
+        </defs>
+
+        <!-- Sky -->
+        <rect x="-540" y="-960" width="2160" height="1900" fill="url(#welt-sky)"/>
+        <g id="welt-moon" style="opacity:0">
+          <circle cx="250" cy="300" r="70" fill="#fff3d6"/>
+          <circle cx="280" cy="285" r="62" fill="#2a0f2e"/>
+        </g>
+        <!-- Distant mountains -->
+        <path d="M-540 930 L-420 760 L-330 840 L-220 700 L-120 820 L-20 720 L80 850 L160 780 L260 880 L340 800 L420 900 L1000 900 L1080 780 L1180 860 L1300 720 L1420 830 L1620 760 L1620 940 L-540 940 Z" fill="#3b1416"/>
+        <!-- Volcano -->
+        <g id="welt-volcano">
+          <path d="M-60 930 L120 600 L170 610 L200 590 L380 930 Z" fill="#2a1012"/>
+          <path d="M120 600 L170 610 L200 590 L185 640 L150 700 L140 650 Z" fill="#ff6a1a"/>
+          <ellipse cx="160" cy="590" rx="60" ry="22" fill="url(#welt-fireglow)"/>
+          <path id="welt-smoke" d="M150 580 Q120 520 160 470 Q200 420 170 360 Q150 320 190 280" stroke="#4a2a2a" stroke-width="34" fill="none" stroke-linecap="round" opacity="0.7"/>
+        </g>
+        <!-- Ground -->
+        <rect x="-540" y="905" width="2160" height="1975" fill="url(#welt-ground)"/>
+        <path d="M-540 925 Q0 895 540 915 Q1080 935 1620 905 L1620 960 L-540 960 Z" fill="#4a332c"/>
+        <!-- Path -->
+        <path d="M470 920 Q430 1000 520 1060 Q640 1140 520 1240 Q380 1360 560 1500 Q700 1620 600 1900 L840 1900 Q900 1620 760 1500 Q600 1360 720 1240 Q820 1140 640 1060 Q560 1000 590 920 Z" fill="#7a4a2a"/>
+        <!-- Lava cracks -->
+        <g id="welt-lava" stroke="#ff6a1a" stroke-width="8" fill="none" stroke-linecap="round">
+          <path d="M-100 1150 L60 1180 L120 1260 L260 1290"/>
+          <path d="M860 1300 L980 1270 L1080 1330 L1200 1310"/>
+          <path d="M100 1560 L220 1520 L300 1600"/>
+          <path d="M940 1050 L1030 1080 L1120 1040"/>
+        </g>
+        <!-- Rocks -->
+        <g fill="#2b1f1c">
+          <path d="M120 1050 L170 1010 L230 1030 L250 1080 L110 1080 Z"/>
+          <path d="M900 1180 L950 1140 L1010 1160 L1020 1210 L890 1210 Z"/>
+          <path d="M40 1420 L100 1370 L170 1400 L180 1450 L30 1450 Z"/>
+          <path d="M980 1560 L1040 1520 L1100 1550 L1100 1600 L970 1600 Z"/>
+        </g>
+        <!-- Dead trees -->
+        <g stroke="#1a1110" stroke-width="10" fill="none" stroke-linecap="round">
+          <path d="M60 1000 L60 900 M60 940 L30 910 M60 925 L95 890"/>
+          <path d="M1010 1000 L1010 880 M1010 930 L980 895 M1010 910 L1045 875"/>
+        </g>
+        <!-- Tower -->
+        <g id="welt-tower">
+          <path d="M720 1010 L760 520 L740 420 L790 300 L800 340 L830 250 L860 340 L870 300 L920 420 L900 520 L940 1010 Z" fill="#141016"/>
+          <path d="M760 520 L900 520 L895 560 L765 560 Z" fill="#221a22"/>
+          <path d="M770 700 L890 700 L886 730 L774 730 Z" fill="#221a22"/>
+          <path d="M700 1010 L960 1010 L940 960 L720 960 Z" fill="#1d161c"/>
+          <rect x="815" y="880" width="30" height="80" rx="14" fill="#ff8a2a" opacity="0.7"/>
+        </g>
+
+        <!-- Night tint -->
+        <rect id="welt-night" x="-540" y="-960" width="2160" height="3840" fill="#0a0626" style="opacity:0"/>
+
+        <!-- Glowing things above the tint -->
+        <g id="welt-eye">
+          <circle cx="830" cy="290" r="120" fill="url(#welt-eyeglow)"/>
+          <path d="M780 290 Q830 255 880 290 Q830 325 780 290 Z" fill="#ff9a2a"/>
+          <ellipse cx="830" cy="290" rx="6" ry="20" fill="#1a0500"/>
+        </g>
+        <g id="welt-torches">
+          <g transform="translate(715,960)"><rect x="-4" y="0" width="8" height="50" fill="#2a1a10"/><g class="welt-flame"><ellipse cx="0" cy="-14" rx="30" ry="30" fill="url(#welt-fireglow)"/><path d="M0 -30 Q12 -12 8 0 L-8 0 Q-12 -12 0 -30 Z" fill="#ffb02a"/></g></g>
+          <g transform="translate(945,960)"><rect x="-4" y="0" width="8" height="50" fill="#2a1a10"/><g class="welt-flame"><ellipse cx="0" cy="-14" rx="30" ry="30" fill="url(#welt-fireglow)"/><path d="M0 -30 Q12 -12 8 0 L-8 0 Q-12 -12 0 -30 Z" fill="#ffb02a"/></g></g>
+        </g>
+        <g id="welt-embers" fill="#ffb347">
+          <circle class="welt-ember" cx="120" cy="1300" r="5"/>
+          <circle class="welt-ember" cx="300" cy="1400" r="4"/>
+          <circle class="welt-ember" cx="460" cy="1350" r="6"/>
+          <circle class="welt-ember" cx="640" cy="1450" r="4"/>
+          <circle class="welt-ember" cx="820" cy="1320" r="5"/>
+          <circle class="welt-ember" cx="980" cy="1420" r="4"/>
+          <circle class="welt-ember" cx="220" cy="1500" r="3"/>
+          <circle class="welt-ember" cx="900" cy="1550" r="3"/>
+        </g>
+
+        <!-- Elves on the ridge -->
+        <g id="welt-elves" style="opacity:0">
+          <g transform="translate(70,930)"><g class="welt-elf"><use href="#welt-elf" x="-30" y="-110" width="60" height="112"/></g></g>
+          <g transform="translate(140,930)"><g class="welt-elf"><use href="#welt-elf" x="-30" y="-110" width="60" height="112"/></g></g>
+          <g transform="translate(210,930)"><g class="welt-elf"><use href="#welt-elf" x="-30" y="-110" width="60" height="112"/></g></g>
+          <g transform="translate(280,930)"><g class="welt-elf"><use href="#welt-elf" x="-30" y="-110" width="60" height="112"/></g></g>
+          <g transform="translate(350,930)"><g class="welt-elf"><use href="#welt-elf" x="-30" y="-110" width="60" height="112"/></g></g>
+          <g transform="translate(420,930)"><g class="welt-elf"><use href="#welt-elf" x="-30" y="-110" width="60" height="112"/></g></g>
+        </g>
+
+        <!-- Forge (option A) -->
+        <g transform="translate(250,1010)">
+          <g id="welt-forge" style="opacity:0">
+            <ellipse cx="0" cy="4" rx="120" ry="18" fill="rgba(0,0,0,.45)"/>
+            <path d="M-110 0 L-110 -150 Q-70 -200 -30 -150 L-30 0 Z" fill="#4a3a36" stroke="#1a1210" stroke-width="6"/>
+            <path d="M-92 -10 L-92 -80 Q-70 -110 -48 -80 L-48 -10 Z" fill="#ff7a1a"/>
+            <g id="welt-forgefire"><ellipse cx="-70" cy="-50" rx="60" ry="60" fill="url(#welt-fireglow)"/><path d="M-70 -95 Q-50 -60 -56 -14 L-84 -14 Q-90 -60 -70 -95 Z" fill="#ffd04a"/></g>
+            <path d="M10 -60 L110 -60 L110 -46 L80 -40 L80 -20 L96 0 L24 0 L40 -20 L40 -40 L10 -46 Z" fill="#2c2c34" stroke="#121216" stroke-width="5"/>
+            <path d="M60 -130 L60 -70" stroke="#6b4a2a" stroke-width="10" stroke-linecap="round"/>
+            <rect x="40" y="-150" width="44" height="26" rx="5" fill="#55555f"/>
+          </g>
+        </g>
+
+        <!-- Ork placeholders -->
+        <g id="welt-ghost0wrap" transform="translate(690,1065)"><g id="welt-ghost0" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+        <g id="welt-ghosts">
+          <g transform="translate(300,1010)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(780,1010)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(170,1060)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(410,1050)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(910,1060)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(240,1130)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(720,1120)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(860,1170)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(380,1180)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(100,1200)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(560,1230)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+          <g transform="translate(990,1240)"><g class="welt-ghost" style="opacity:0"><use href="#welt-ghost" x="-80" y="-170" width="160" height="175"/></g></g>
+        </g>
+
+        <!-- Sauron -->
+        <g transform="translate(540,1060)">
+          <ellipse cx="0" cy="0" rx="64" ry="13" fill="rgba(0,0,0,.5)"/>
+          <g id="welt-sau">
+            <g id="welt-saubob">
+              <!-- cape -->
+              <path d="M-36 -116 Q-70 -60 -66 -6 L66 -6 Q70 -60 36 -116 Z" fill="#7a0f12"/>
+              <!-- legs -->
+              <rect x="-27" y="-48" width="20" height="40" rx="6" fill="#24252c"/>
+              <rect x="7" y="-48" width="20" height="40" rx="6" fill="#24252c"/>
+              <path d="M-34 -14 L-4 -14 L-4 0 L-38 0 Z" fill="#0f0f12"/>
+              <path d="M4 -14 L34 -14 L38 0 L4 0 Z" fill="#0f0f12"/>
+              <!-- torso -->
+              <rect x="-42" y="-120" width="84" height="80" rx="20" fill="#2c2e38" stroke="#121218" stroke-width="5"/>
+              <path d="M-30 -96 L30 -96 M-30 -80 L30 -80" stroke="#3d404d" stroke-width="5"/>
+              <rect x="-42" y="-60" width="84" height="12" fill="#5a1e10"/>
+              <path d="M-10 -66 Q0 -76 10 -66 Q0 -56 -10 -66 Z" fill="#ff8a2a"/>
+              <!-- left arm -->
+              <path d="M-44 -104 L-58 -56" stroke="#2c2e38" stroke-width="18" stroke-linecap="round"/>
+              <circle cx="-58" cy="-54" r="11" fill="#17171c"/>
+              <!-- right arm with mace -->
+              <g id="welt-sauarm">
+                <path d="M44 -104 L58 -60" stroke="#2c2e38" stroke-width="18" stroke-linecap="round"/>
+                <g id="welt-saumace">
+                  <path d="M60 -58 L76 -150" stroke="#3b2a1e" stroke-width="9" stroke-linecap="round"/>
+                  <circle cx="78" cy="-160" r="20" fill="#3a3d48" stroke="#16161b" stroke-width="4"/>
+                  <path d="M78 -188 L84 -178 L72 -178 Z M106 -160 L96 -154 L96 -166 Z M50 -160 L60 -166 L60 -154 Z M78 -132 L72 -142 L84 -142 Z" fill="#16161b"/>
+                </g>
+                <g id="welt-sausword" style="opacity:0"><g transform="translate(34,26)">
+                  <g id="welt-sauswordblade">
+                    <path d="M56 -70 L58 -200 L68 -214 L76 -200 L74 -70 Z" fill="#a0613a" stroke="#4a2a14" stroke-width="4"/>
+                    <path d="M58 -150 L64 -146 L58 -140 Z M74 -120 L68 -116 L74 -110 Z M58 -100 L63 -96 L58 -92 Z" fill="#4a2a14"/>
+                    <circle cx="66" cy="-176" r="6" fill="#6b3a1e"/>
+                    <rect x="44" y="-74" width="44" height="10" rx="4" fill="#5a4a3a"/>
+                  </g>
+                </g></g>
+                <circle cx="58" cy="-56" r="11" fill="#17171c"/>
+              </g>
+              <!-- shoulders -->
+              <g fill="#3a3d48" stroke="#121218" stroke-width="4">
+                <circle cx="-44" cy="-110" r="20"/>
+                <circle cx="44" cy="-110" r="20"/>
+              </g>
+              <path d="M-56 -124 L-66 -146 L-46 -128 Z M-40 -128 L-40 -150 L-30 -126 Z M56 -124 L66 -146 L46 -128 Z M40 -128 L40 -150 L30 -126 Z" fill="#121218"/>
+              <!-- blueprint -->
+              <g id="welt-sauplan" style="opacity:0">
+                <rect x="-52" y="-112" width="104" height="72" rx="4" fill="#2a6fd6" stroke="#ffffff" stroke-width="4"/>
+                <path d="M-40 -100 L40 -100 M-40 -52 L40 -52" stroke="#9cc3ff" stroke-width="3"/>
+                <text x="0" y="-60" text-anchor="middle" font-family="LilitaOne" font-size="44" fill="#ffffff">?</text>
+                <circle cx="-56" cy="-76" r="11" fill="#17171c"/>
+                <circle cx="56" cy="-76" r="11" fill="#17171c"/>
+              </g>
+              <!-- helmet -->
+              <path d="M-46 -150 Q-46 -196 0 -198 Q46 -196 46 -150 L40 -116 L-40 -116 Z" fill="#1d1e25" stroke="#0b0b0f" stroke-width="5"/>
+              <path d="M-42 -186 L-50 -234 L-26 -194 Z M-20 -196 L-18 -246 L-2 -198 Z M2 -198 L0 -258 L14 -198 Z M18 -196 L22 -246 L30 -194 Z M34 -188 L50 -234 L42 -180 Z" fill="#1d1e25" stroke="#0b0b0f" stroke-width="4" stroke-linejoin="round"/>
+              <path d="M-30 -168 L30 -168 L22 -128 L8 -122 L-8 -122 L-22 -128 Z" fill="#08080b"/>
+              <!-- eyes: angry / shocked / sad -->
+              <g id="welt-eyesangry" fill="#ff8a1a">
+                <path d="M-26 -160 L-6 -152 L-8 -144 L-24 -148 Z"/>
+                <path d="M26 -160 L6 -152 L8 -144 L24 -148 Z"/>
+              </g>
+              <g id="welt-eyesshock" style="opacity:0">
+                <circle cx="-14" cy="-150" r="10" fill="#ffb04a"/><circle cx="14" cy="-150" r="10" fill="#ffb04a"/>
+                <circle cx="-14" cy="-150" r="4" fill="#1a0500"/><circle cx="14" cy="-150" r="4" fill="#1a0500"/>
+              </g>
+              <g id="welt-eyessad" style="opacity:0" fill="#ff8a1a">
+                <path d="M-26 -148 L-6 -156 L-6 -150 L-24 -143 Z"/>
+                <path d="M26 -148 L6 -156 L6 -150 L24 -143 Z"/>
+              </g>
+              <path id="welt-sweat" style="opacity:0" d="M54 -186 Q64 -170 60 -162 Q54 -156 48 -162 Q46 -170 54 -186 Z" fill="#8fd3ff" stroke="#ffffff" stroke-width="2"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- Wall (option B), in front of Sauron -->
+        <g id="welt-wall">
+          <g class="welt-block" style="opacity:0"><rect x="360" y="1150" width="70" height="56" rx="6" fill="#6b6460" stroke="#2a2422" stroke-width="5"/></g>
+          <g class="welt-block" style="opacity:0"><rect x="432" y="1150" width="70" height="56" rx="6" fill="#77706a" stroke="#2a2422" stroke-width="5"/></g>
+          <g class="welt-block" style="opacity:0"><rect x="504" y="1150" width="70" height="56" rx="6" fill="#6b6460" stroke="#2a2422" stroke-width="5"/></g>
+          <g class="welt-block" style="opacity:0"><rect x="576" y="1150" width="70" height="56" rx="6" fill="#77706a" stroke="#2a2422" stroke-width="5"/></g>
+          <g class="welt-block" style="opacity:0"><rect x="648" y="1150" width="70" height="56" rx="6" fill="#6b6460" stroke="#2a2422" stroke-width="5"/></g>
+          <g class="welt-block" style="opacity:0"><rect x="396" y="1096" width="70" height="56" rx="6" fill="#77706a" stroke="#2a2422" stroke-width="5"/></g>
+          <g class="welt-block" style="opacity:0"><rect x="612" y="1096" width="70" height="56" rx="6" fill="#77706a" stroke="#2a2422" stroke-width="5"/></g>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const cam = (t, d, s, cx, cy, sy = 960, ease = "power2.inOut") =>
+      tl.to("#welt-cam", { scale: s, x: 540 - cx * s, y: sy - cy * s, duration: d, ease }, t);
+
+    // Camera: one continuous move, no cuts
+    tl.set("#welt-cam", { transformOrigin: "0 0", scale: 1, x: 0, y: 0 }, 0);
+    cam(0.1, 2.9, 1.5, 600, 900, 960, "sine.inOut");
+    cam(3.0, 0.5, 2.6, 540, 950, 900);
+    cam(3.5, 2.5, 2.8, 540, 950, 900, "none");
+    cam(6.0, 0.5, 2.1, 600, 960, 1010);
+    cam(9.0, 0.7, 1.0, 540, 960, 960);
+    cam(12.8, 0.5, 1.9, 540, 1000, 1020);
+    cam(15.3, 0.5, 2.5, 540, 960, 950);
+    cam(18.0, 0.8, 1.4, 400, 900, 900);
+    cam(21.1, 0.6, 1.25, 540, 1080, 960);
+    cam(25.4, 0.5, 2.5, 540, 960, 950);
+    cam(29.3, 0.5, 1.7, 250, 1000, 1120);
+    cam(30.9, 0.5, 2.0, 540, 1150, 1050);
+    cam(33.0, 0.8, 1.0, 540, 960, 960);
+
+    // Ambient (finite repeats only)
+    tl.fromTo("#welt-eye", { scale: 1 }, { scale: 1.08, transformOrigin: "50% 50%", duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 43 }, 0);
+    tl.fromTo(".welt-flame", { scaleY: 1 }, { scaleY: 1.25, transformOrigin: "50% 100%", duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 141, stagger: 0.1 }, 0);
+    tl.fromTo(".welt-ember", { y: 0, opacity: 0 }, { y: -700, opacity: 1, duration: 4, ease: "none", repeat: 8, stagger: 0.5 }, 0);
+    tl.fromTo("#welt-smoke", { x: 0 }, { x: 30, duration: 3, ease: "sine.inOut", yoyo: true, repeat: 11 }, 0);
+    tl.fromTo("#welt-lava", { opacity: 0.7 }, { opacity: 1, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 59 }, 0);
+    tl.fromTo("#welt-saubob", { y: 0 }, { y: -4, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 71 }, 0);
+
+    // "Ork-Armee": mace up, eye flares
+    tl.to("#welt-sauarm", { rotation: -40, transformOrigin: "13% 59%", duration: 0.18, ease: "back.out(3)" }, 4.3);
+    tl.to("#welt-sau", { y: -24, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1 }, 4.3);
+    tl.to("#welt-sauarm", { rotation: 0, transformOrigin: "13% 59%", duration: 0.3, ease: "power2.inOut" }, 5.6);
+
+    // "Jeder neue Follower wird ein Ork": ghost next to him
+    tl.fromTo("#welt-ghost0", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, transformOrigin: "50% 100%", duration: 0.35, ease: "back.out(2.5)" }, 7.4);
+    tl.to("#welt-sau", { y: -18, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 8.0);
+    tl.to("#welt-ghost0", { opacity: 0, duration: 0.2 }, 9.0);
+
+    // "ich." hop
+    tl.to("#welt-sau", { y: -20, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 11.95);
+
+    // "null." sad eyes
+    tl.set("#welt-eyesangry", { opacity: 0 }, 14.4);
+    tl.set("#welt-eyessad", { opacity: 1 }, 14.4);
+    tl.to("#welt-sau", { scaleY: 0.94, transformOrigin: "50% 100%", duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1 }, 14.4);
+
+    // "Waffen: ein rostiges Schwert"
+    tl.set("#welt-saumace", { opacity: 0 }, 15.4);
+    tl.set("#welt-sausword", { opacity: 1 }, 15.4);
+    tl.set("#welt-eyessad", { opacity: 0 }, 15.4);
+    tl.set("#welt-eyesangry", { opacity: 1 }, 15.4);
+    tl.fromTo("#welt-sausword", { scale: 0.3 }, { scale: 1, transformOrigin: "50% 100%", duration: 0.3, ease: "back.out(2.5)" }, 15.4);
+    tl.to("#welt-sauswordblade", { rotation: 28, transformOrigin: "50% 100%", duration: 0.5, ease: "bounce.out" }, 17.1);
+    tl.set("#welt-sweat", { opacity: 1 }, 16.6);
+    tl.fromTo("#welt-sweat", { y: -10 }, { y: 6, duration: 0.6, ease: "power1.in" }, 16.6);
+
+    // Night: elves attack
+    tl.set("#welt-sausword", { opacity: 0 }, 18.0);
+    tl.set("#welt-saumace", { opacity: 1 }, 18.0);
+    tl.set("#welt-sweat", { opacity: 0 }, 18.0);
+    tl.to("#welt-night", { opacity: 0.6, duration: 0.7, ease: "power1.inOut" }, 18.3);
+    tl.to("#welt-moon", { opacity: 1, duration: 0.7 }, 18.3);
+    tl.set("#welt-elves", { opacity: 1 }, 19.3);
+    tl.fromTo(".welt-elf", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "back.out(2)", stagger: 0.08 }, 19.3);
+    tl.set("#welt-eyesangry", { opacity: 0 }, 19.65);
+    tl.set("#welt-eyesshock", { opacity: 1 }, 19.65);
+    tl.set("#welt-sweat", { opacity: 1 }, 19.65);
+    tl.to("#welt-sau", { y: -30, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1 }, 19.65);
+    tl.to("#welt-night", { opacity: 0, duration: 0.6 }, 21.2);
+    tl.to("#welt-moon", { opacity: 0, duration: 0.6 }, 21.2);
+    tl.to("#welt-elves", { opacity: 0, duration: 0.4 }, 21.2);
+    tl.set("#welt-eyesshock", { opacity: 0 }, 21.2);
+    tl.set("#welt-eyesangry", { opacity: 1 }, 21.2);
+    tl.set("#welt-sweat", { opacity: 0 }, 21.2);
+
+    // "Folg jetzt": the army slots fill up
+    tl.fromTo(".welt-ghost", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, transformOrigin: "50% 100%", duration: 0.3, ease: "back.out(2.5)", stagger: 0.16 }, 22.2);
+    tl.to(".welt-ghost", { opacity: 0, duration: 0.25 }, 25.4);
+
+    // Blueprint
+    tl.set("#welt-saumace", { opacity: 0 }, 25.5);
+    tl.set("#welt-sauplan", { opacity: 1 }, 25.5);
+    tl.set("#welt-sauplan", { opacity: 0 }, 29.3);
+    tl.set("#welt-saumace", { opacity: 1 }, 29.3);
+
+    // Option A: forge
+    tl.fromTo("#welt-forge", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, transformOrigin: "50% 100%", duration: 0.45, ease: "back.out(2)" }, 29.6);
+    tl.fromTo("#welt-forgefire", { scaleY: 1 }, { scaleY: 1.2, transformOrigin: "50% 100%", duration: 0.2, yoyo: true, repeat: 13, ease: "sine.inOut" }, 29.9);
+    // Option B: wall
+    tl.fromTo(".welt-block", { opacity: 0, y: -80 }, { opacity: 1, y: 0, duration: 0.3, ease: "bounce.out", stagger: 0.12 }, 31.2);
+
+    // Undecided: both vanish, night returns, elves advance
+    tl.to(["#welt-forge", ".welt-block"], { opacity: 0, duration: 0.3 }, 32.9);
+    tl.to("#welt-night", { opacity: 0.6, duration: 0.6 }, 33.0);
+    tl.to("#welt-moon", { opacity: 1, duration: 0.6 }, 33.0);
+    tl.to("#welt-elves", { opacity: 1, duration: 0.3 }, 33.2);
+    tl.to(".welt-elf", { y: 120, scale: 1.8, transformOrigin: "50% 100%", duration: 2.2, ease: "power1.in", stagger: 0.05 }, 33.3);
+    tl.set("#welt-eyesangry", { opacity: 0 }, 34.0);
+    tl.set("#welt-eyesshock", { opacity: 1 }, 34.0);
+
+    window.__timelines["welt"] = tl;
+  </script>
+</template>
