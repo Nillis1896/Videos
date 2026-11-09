@@ -138,6 +138,11 @@
   #cardA { left: 150px; } #cardB { right: 150px; }
   #oder { position: absolute; z-index: 2; left: 0; right: 0; top: 250px; text-align: center; font: 900 50px/1 var(--font-rune); }
 
+  .ftag { position: absolute; top: 0; left: 0; visibility: hidden; pointer-events: none; }
+  .ftin { display: flex; flex-direction: column; align-items: center; }
+  .ftin .plate { padding: 10px 26px 12px; text-align: center; }
+  .ftname { font: 900 58px/1 var(--font-rune); }
+  .ftrole { font: 900 26px/1.2 var(--font-engrave); letter-spacing: .18em; color: #e6dccd; margin-top: 4px; text-shadow: 0 2px 0 #000; }
   #roll { margin-top: 14px; width: 930px; padding: 18px 26px 20px; }
   #rolllist { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px 16px; }
   .rl { font: 900 26px/1.08 var(--font-engrave); overflow-wrap: anywhere; color: #e9dfcf; text-shadow: 0 2px 0 #000; }
@@ -211,9 +216,10 @@
         </div>
 
         <div id="neworks" class="ov" style="top:310px">
-          <div class="rune" style="font-size:72px"><span id="neworksnum" class="molten">+8</span> <span class="outline" style="color:#fff">NEUE KRIEGER</span></div>
-          <div id="roll" class="plate"><div id="rolllist"></div></div>
+          <div class="rune" style="font-size:84px"><span id="neworksnum" class="molten">+8</span> <span class="outline" style="color:#fff">NEUE KRIEGER</span></div>
         </div>
+
+        <div id="ftags"></div>
 
         <div id="righthand" class="ov" style="top:330px">
           <div class="rune outline" style="color:#fff;font-size:70px">MEINE</div>
@@ -298,6 +304,7 @@ const RECRUITS = [
   ["nihil66", "Isildur", "isildur"], ["caspar", "Balrog", "balrog"], ["ig", "Uruk-Hai", "uruk"], ["chiko", "Koch", "cook"],
   ["caraxes", "Bester Bogenschütze", "archer"], ["tobiwankenobi", "Reiter", "horseman"], ["patrickgrabner", "Drache", "dragon2"], ["angel", "Uruk-Hai", "uruk"], ["krieger", "Ork-General", "general"]
 ];
+const FEATURED = ["caspar", "Charles", "mb2008", "Travisschoko"];   // diese Krieger werden groß vorgestellt
 const FOLLOWERS = 404;   // aktuelle Follower-Zahl
 const NEW_ORKS = RECRUITS.length;
 const HORDE = Math.max(0, FOLLOWERS - RECRUITS.length);
@@ -594,7 +601,7 @@ const wallBlocks = [];
 const orcs = [];
 {
   const M = (c, o) => std(c, { flatShading: false, ...o });
-  const SLOTS = [[-1.7, -0.4], [1.8, -0.5], [-2.7, 0.5], [-3.8, -1.8], [2.8, 0.4], [-1.2, 1.0], [1.3, 1.0], [3.6, -1.0], [-4.4, 1.0], [2.4, -1.5], [3.9, -2.7], [-1.5, -2.9], [2.6, -6.2], [1.3, -2.8], [4.3, 1.3], [-3.3, -3.3], [-4.6, 2.4], [0.0, -4.0], [3.0, -4.3], [-4.4, -2.6], [4.6, -2.4], [-1.2, -1.4], [4.8, -0.2], [-5.0, -0.6], [0.8, -1.3], [-2.4, -2.2], [1.9, -3.4], [-3.0, -4.6], [-0.6, -3.2], [-7.4, -3.8], [3.6, -3.6], [-5.6, 1.4], [5.6, 1.0], [6.0, -1.6], [-3.6, -7.6], [-0.6, -5.0], [1.0, -5.4]];
+  const SLOTS = [[-1.7,-0.4], [1.8,-0.5], [-2.7,0.5], [-3.8,-1.8], [2.8,0.4], [-1.2,1.0], [1.3,1.0], [3.6,-1.0], [-4.4,1.0], [2.4,-1.5], [3.9,-2.7], [-1.5,-2.9], [2.6,-6.2], [1.3,-2.8], [4.3,1.3], [-7.4,-3.8], [-4.6,2.4], [0.0,-4.0], [3.0,-4.3], [-4.4,-2.6], [4.6,-2.4], [-1.2,-1.4], [4.8,-0.2], [-5.0,-0.6], [0.8,-1.3], [-2.4,-2.2], [1.9,-3.4], [-3.0,-4.6], [-0.6,-3.2], [-7.4,-3.8], [-2.9,-2.4], [-5.6,1.4], [5.6,1.0], [6.0,-1.6], [-3.6,-7.6], [-0.6,-5.0], [1.0,-5.4]];
   const LOOK = {
     wraith:  { skin: 0x111014, body: 0x141218, robe: 0x0e0d10, head: "crown", eyes: 0x9fd8ff, weapon: "sword", scale: 1.15 },
     white:   { skin: 0xd8c2a8, body: 0xe8e6e0, robe: 0xf2f0ea, head: "hair", beard: 0xf0f0f0, weapon: "staffdark", scale: 1.1 },
@@ -697,6 +704,27 @@ const orcs = [];
     o.rotation.y = -x * 0.06; o.visible = false; scene.add(o); orcs.push(o);
   });
 }
+// featured warriors: golden ring + light + name tag
+const FT = [];
+{
+  const ftWrap = document.getElementById("ftags");
+  FEATURED.forEach(name => {
+    const idx = RECRUITS.findIndex(r => r[0] === name); if (idx < 0) return;
+    const o = orcs[idx], role = RECRUITS[idx][1];
+    const el = document.createElement("div"); el.className = "ftag";
+    el.innerHTML = '<div class="ftin"><div class="glowwrap"><div class="plate"><div class="ftname molten"></div><div class="ftrole"></div></div></div><div class="tagarrow"></div></div>';
+    el.querySelector(".ftname").textContent = name; el.querySelector(".ftrole").textContent = role.toUpperCase();
+    ftWrap.append(el);
+    const big = o.userData.dragon ? 2.2 : 1;
+    const ring = new THREE.Mesh(new THREE.RingGeometry(0.42 * big, 0.55 * big, 32), new THREE.MeshBasicMaterial({ color: 0xffc23a, transparent: true, opacity: 0.9, fog: false, side: THREE.DoubleSide }));
+    ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.45 * big, 0.6 * big, 6, 20, 1, true), new THREE.MeshBasicMaterial({ color: 0xffc860, transparent: true, opacity: 0.12, fog: false, side: THREE.DoubleSide, depthWrite: false }));
+    beam.visible = false; scene.add(beam);
+    const lt = new THREE.PointLight(0xffd080, 0, 5); scene.add(lt);
+    FT.push({ o, el, inner: el.querySelector(".ftin"), ring, beam, lt, big });
+  });
+}
+const _fb = new THREE.Box3();
 // the horde: every other follower as a simple orc, instanced
 const horde = { n: 0 };
 {
@@ -902,14 +930,19 @@ function renderAt(t) {
   // "Wer wird meine rechte Hand?": camera sweeps over the candidates, Sauron ponders
   const RW = V.rh, inRH = RW && t >= RW[0] && t < RW[1];
   if (inRH) {
-    const u = ease(ramp(t, RW[0], RW[1])), a = -0.6 + u * 1.2;
-    camera.position.set(Math.sin(a) * 9.4, 4.8 - u * 0.6, Math.cos(a) * 9.4 + 0.4);
-    camera.lookAt(0, 1.3, -1.6);
+    const u = ease(ramp(t, RW[0], RW[1])), seg = (RW[1] - RW[0] - 0.4) / Math.max(1, FT.length);
+    const shot = k => { const f = FT[k]; _fb.setFromObject(f.o); const c = new THREE.Vector3((_fb.min.x + _fb.max.x) / 2, 0, (_fb.min.z + _fb.max.z) / 2), h = _fb.max.y - _fb.min.y;
+      return [new THREE.Vector3(c.x + 0.3 * h, h * 1.5 + 1.6, c.z + 1.5 * h + 2.4), new THREE.Vector3(c.x, h * 0.5, c.z)]; };
+    const k = Math.floor((t - RW[0] - 0.4) / seg);
+    if (k < 0 || !FT.length) { const a = -0.6 + u * 1.2; camera.position.set(Math.sin(a) * 9.4, 4.8 - u * 0.6, Math.cos(a) * 9.4 + 0.4); camera.lookAt(0, 1.3, -1.6); }
+    else { const kk = Math.min(k, FT.length - 1), [p1, q1] = shot(kk), local = ramp(t - RW[0] - 0.4 - kk * seg, 0, 0.35);
+      let p0, q0; if (kk === 0) { p0 = new THREE.Vector3(Math.sin(-0.6 + 0.2) * 9.4, 4.6, Math.cos(-0.4) * 9.4 + 0.4); q0 = new THREE.Vector3(0, 1.3, -1.6); } else { [p0, q0] = shot(kk - 1); }
+      const e2 = ease(local); camera.position.lerpVectors(p0, p1, e2); _q.lerpVectors(q0, q1, e2); camera.position.x += Math.sin(t * 0.7) * 0.04; camera.lookAt(_q); }
     sau.rotation.z = t >= V.rhWie ? 0.13 * Math.sin((t - V.rhWie) * 3.2) : 0;
     sau.rotation.y = 0.35 * Math.sin(u * Math.PI * 2);
   } else { sau.rotation.z = 0; sau.rotation.y = 0; }
   RH_PICKS.forEach(({ i, sp }, k) => {
-    const o = orcs[i]; const on = inRH && o && o.visible;
+    const o = orcs[i]; const on = false;
     sp.visible = !!on; if (!on) return;
     _box.setFromObject(o);
     const pop = popIn(t, RW[0] + 0.35 + k * 0.28, 0.35), s2 = (o.userData.dragon ? 1.3 : 0.8) * pop * (1 + 0.08 * Math.sin(t * 6 + k));
@@ -920,8 +953,17 @@ function renderAt(t) {
   const ep = embGeo.attributes.position;
   for (let i = 0; i < EMB; i++) { const b = i * 4, y = (embBase[b + 1] + t * embBase[b + 3]) % 12; ep.setXYZ(i, embBase[b] + Math.sin(t * 0.8 + i) * 0.3, y, embBase[b + 2]); }
   ep.needsUpdate = true;
+  FT.forEach((f, k) => {
+    const segL = inRH ? (RW[1] - RW[0] - 0.4) / FT.length : 1, on = inRH && f.o.visible && Math.floor((t - RW[0] - 0.4) / segL) === k;
+    f.ring.visible = f.beam.visible = on; f.lt.intensity = on ? 8 : 0;
+    if (!on) return;
+    _fb.setFromObject(f.o); const cx = (_fb.min.x + _fb.max.x) / 2, cz = (_fb.min.z + _fb.max.z) / 2;
+    f.ring.position.set(cx, 0.05, cz); f.beam.position.set(cx, 3, cz); f.lt.position.set(cx, _fb.max.y + 1, cz + 0.5);
+    f.ring.material.opacity = 0.7 + 0.25 * Math.sin(t * 6 + k);
+  });
   renderer.render(scene, camera);
   placeAt(platzEl, PLATZ_GHOST, 1.2);
+  FT.forEach(f => { if (!f.ring.visible) return; _fb.setFromObject(f.o); _v.set((_fb.min.x + _fb.max.x) / 2, _fb.max.y + 0.25, (_fb.min.z + _fb.max.z) / 2); _v.project(camera); f.el.style.left = Math.min(820, Math.max(260, (_v.x + 1) / 2 * 1080)).toFixed(1) + "px"; f.el.style.top = Math.min(1100, Math.max(640, (1 - _v.y) / 2 * 1920)).toFixed(1) + "px"; });
 }
 
 // ---------- avatar: render Sauron's portrait once and use it as the profile picture ----------
@@ -946,7 +988,7 @@ function buildTimeline() {
   if (tl) tl.kill();
   capsEl.textContent = "";
   gsap.set("#stage *", { clearProps: "transform,opacity,visibility,filter,strokeDashoffset" });
-  gsap.set(["#platzin"], { xPercent: -50, yPercent: -100 });
+  gsap.set(["#platzin", ".ftin"], { xPercent: -50, yPercent: -100 });
   tl = gsap.timeline({ paused: true });
   // sign
   tl.fromTo("#signwrap", { y: -700 }, { y: 0, duration: 0.32, ease: "power4.in" }, 0);
@@ -975,13 +1017,13 @@ function buildTimeline() {
   tl.fromTo("#follow1 .fplus", { scale: 1 }, { scale: 1.3, duration: 0.12, yoyo: true, repeat: 1 }, warp(7.48));
   out("#follow1", 8.3);
   document.getElementById("neworksnum").textContent = "+" + FOLLOWERS;
-  const rl = document.getElementById("rolllist"); rl.textContent = "";
-  RECRUITS.forEach(([name, role]) => { const d = document.createElement("div"); d.className = "rl"; d.textContent = name; const sm = document.createElement("small"); sm.textContent = role.toUpperCase(); d.append(sm); rl.append(d); });
-  if (HORDE) { const d = document.createElement("div"); d.className = "rl"; d.style.color = "var(--gold)"; d.textContent = "+" + HORDE; const sm = document.createElement("small"); sm.textContent = "WEITERE ORKS"; d.append(sm); rl.append(d); }
-  show("#neworks", 8.6, 11.0); pop("#neworks", 8.6);
-  tl.fromTo("#rolllist .rl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out", stagger: 0.035 }, warp(8.65));
-  tl.fromTo("#neworksnum", { scale: 1 }, { scale: 1.2, duration: 0.15, yoyo: true, repeat: 1 }, warp(9.4));
-  out("#neworks", 10.8);
+  show("#neworks", 8.6, 9.75); pop("#neworks", 8.6);
+  tl.fromTo("#neworksnum", { scale: 1 }, { scale: 1.2, duration: 0.15, yoyo: true, repeat: 1 }, warp(9.2));
+  out("#neworks", 9.55);
+  if (V.rh) { const seg = (V.rh[1] - V.rh[0] - 0.4) / Math.max(1, FT.length);
+    FT.forEach((f, k) => { const a = V.rh[0] + 0.4 + k * seg + 0.3, b = V.rh[0] + 0.4 + (k + 1) * seg; tl.set(f.el, { visibility: "visible" }, a); tl.set(f.el, { visibility: "hidden" }, b);
+      tl.fromTo(f.inner, { scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2.4)" }, a);
+      tl.to(f.inner, { scale: 0.7, opacity: 0, duration: 0.15 }, b - 0.15); }); }
   // right hand
   if (V.rh) { tl.set("#righthand", { visibility: "visible" }, V.rh[0] + 0.2); tl.set("#righthand", { visibility: "hidden" }, V.rh[1]);
     tl.fromTo("#righthand", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.2)" }, V.rh[0] + 0.2);
