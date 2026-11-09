@@ -292,7 +292,8 @@ const RECRUITS = [
   ["Raptor", "Lurtz", "uruk"], ["Pippo", "Istari", "grey"], ["Tim", "Wikinger", "viking"], ["Konstantin", "General", "general"],
   ["Niklas", "Wargreiter", "warg"], ["Henrik", "Uruk-Hai", "uruk"], ["mb2008", "Trollhäuptling", "troll"], ["MaggiManni", "Olog-Hai", "olog"],
   ["Charles", "Smaug", "dragon"], ["Jona", "Riesen-Ork", "bigorc"], ["Pfanekuchen", "Kommandant", "commander"],
-  ["Zueng", "Nazgûl", "wraith"], ["Edangelo", "Kommandant", "commander"], ["Zoll", "Offizier", "officer"]
+  ["Zueng", "Nazgûl", "wraith"], ["Edangelo", "Kommandant", "commander"], ["Zoll", "Offizier", "officer"],
+  ["Hosain", "Ritter", "knight"], ["m.Thomm", "Ork-General", "general"], ["Søren", "Uruk-Hai", "uruk"], ["Christian", "Nazgûl", "wraith"], ["Marvin", "Glockenwächter", "bell"]
 ];
 const FOLLOWERS = 404;   // aktuelle Follower-Zahl
 const NEW_ORKS = RECRUITS.length;
@@ -590,7 +591,7 @@ const wallBlocks = [];
 const orcs = [];
 {
   const M = (c, o) => std(c, { flatShading: false, ...o });
-  const SLOTS = [[-1.7, -0.4], [1.8, -0.5], [-2.7, 0.5], [-3.8, -1.8], [2.8, 0.4], [-1.2, 1.0], [1.3, 1.0], [3.6, -1.0], [-4.4, 1.0], [2.4, -1.5], [3.9, -2.7], [-1.5, -2.9], [2.6, -6.2], [1.3, -2.8], [4.3, 1.3], [-3.3, -3.3], [-4.6, 2.4], [0.0, -4.0], [3.0, -4.3]];
+  const SLOTS = [[-1.7, -0.4], [1.8, -0.5], [-2.7, 0.5], [-3.8, -1.8], [2.8, 0.4], [-1.2, 1.0], [1.3, 1.0], [3.6, -1.0], [-4.4, 1.0], [2.4, -1.5], [3.9, -2.7], [-1.5, -2.9], [2.6, -6.2], [1.3, -2.8], [4.3, 1.3], [-3.3, -3.3], [-4.6, 2.4], [0.0, -4.0], [3.0, -4.3], [-4.4, -2.6], [4.6, -2.4], [-1.2, -1.4], [4.8, -0.2], [-5.0, -0.6]];
   const LOOK = {
     wraith:  { skin: 0x111014, body: 0x141218, robe: 0x0e0d10, head: "crown", eyes: 0x9fd8ff, weapon: "sword", scale: 1.15 },
     white:   { skin: 0xd8c2a8, body: 0xe8e6e0, robe: 0xf2f0ea, head: "hair", beard: 0xf0f0f0, weapon: "staffdark", scale: 1.1 },
@@ -605,6 +606,8 @@ const orcs = [];
     bigorc:  { skin: 0x4f7a2e, body: 0x3a2414, head: "bald", eyes: 0xff3a1a, weapon: "club", scale: 1.55 },
     commander: { skin: 0x4f7a2e, body: 0x2a2b33, head: "helm", eyes: 0xff3a1a, weapon: "banner", cape: true, scale: 1.15 },
     officer: { skin: 0x4f7a2e, body: 0x3a2a1a, head: "helm", eyes: 0xff3a1a, weapon: "sword", cape: true, scale: 1.05 },
+    knight:  { skin: 0xd8b090, body: 0x8a8c94, head: "helm", weapon: "sword", armor: true, shield: true, scale: 1.08 },
+    bell:    { skin: 0x4f7a2e, body: 0x3a2414, head: "bald", eyes: 0xff3a1a, weapon: "bell", scale: 1.05 },
     dragon:  { scale: 1.0 }
   };
   RECRUITS.forEach(([name, role, kind], i) => {
@@ -654,11 +657,13 @@ const orcs = [];
     if (L.head === "horns") { mesh(new THREE.SphereGeometry(0.17, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.96, 0, hb); [-1, 1].forEach(s => { const hn = mesh(new THREE.ConeGeometry(0.04, 0.22, 6), M(0xeee2c8), s * 0.18, 1.08, 0, hb); hn.rotation.z = -s * 0.7; }); }
     if (L.head === "bonecrown") { for (let k = 0; k < 5; k++) { const a = (k - 2) * 0.45; const bn = mesh(new THREE.ConeGeometry(0.03, 0.2, 4), M(0xe8dcc0), Math.sin(a) * 0.14, 1.1, Math.cos(a) * 0.1, hb); bn.rotation.z = -a * 0.5; } }
     if (L.head === "helm") { mesh(new THREE.SphereGeometry(0.18, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.95, 0, hb); mesh(new THREE.BoxGeometry(0.03, 0.14, 0.2), steel, 0, 1.12, 0, hb); }
+    if (L.shield) { const sh = mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 12), M(0x2a3a8a), -0.32, 0.55, 0.1, hb); sh.rotation.x = Math.PI / 2; mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.05, 8), metal(0xd0b060), -0.32, 0.55, 0.13, hb).rotation.x = Math.PI / 2; }
     if (L.armor) { mesh(new THREE.CylinderGeometry(0.26, 0.28, 0.36, 8), steel, 0, 0.58, 0, hb); [-1, 1].forEach(s2 => mesh(new THREE.SphereGeometry(0.12, 8, 6), steel, s2 * 0.27, 0.75, 0, hb)); }
     if (L.head === "plume") { mesh(new THREE.SphereGeometry(0.175, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.96, 0, hb); const pl = mesh(new THREE.BoxGeometry(0.04, 0.12, 0.3), M(0xc01818), 0, 1.15, -0.04, hb); }
     const w = new THREE.Group(); w.position.set(0.33, 0.42, 0.06); hb.add(w);
     if (L.weapon === "staffdark" || L.weapon === "staffglow") { mesh(new THREE.CylinderGeometry(0.02, 0.025, 1.3, 6), L.weapon === "staffdark" ? M(0x111111) : wood, 0, 0.4, 0, w); mesh(new THREE.SphereGeometry(0.05, 8, 6), L.weapon === "staffglow" ? glow(0xeaf4ff) : M(0x222222), 0, 1.06, 0, w); }
     else if (L.weapon === "axe") { w.rotation.z = -0.3; mesh(new THREE.CylinderGeometry(0.025, 0.03, 0.6, 6), wood, 0, 0.3, 0, w); mesh(new THREE.BoxGeometry(0.02, 0.16, 0.18), steel, 0, 0.58, 0.07, w); const sh = mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 12), M(0x8a2a1a), -0.62, 0.15, 0.05, w); sh.rotation.x = Math.PI / 2; }
+    else if (L.weapon === "bell") { mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.6, 6), wood, 0, 0.6, 0, w); mesh(new THREE.BoxGeometry(0.4, 0.04, 0.04), wood, -0.18, 1.38, 0, w); const bl = mesh(new THREE.LatheGeometry([[0.0, 0.0], [0.17, 0.0], [0.15, 0.06], [0.11, 0.2], [0.09, 0.3], [0.0, 0.32]].map(([r, y]) => new THREE.Vector2(r, y)), 12), metal(0xb07a2a, { roughness: 0.3 }), -0.34, 1.02, 0, w); }
     else if (L.weapon === "bigsword") { w.rotation.z = -0.2; mesh(new THREE.BoxGeometry(0.07, 0.9, 0.02), steel, 0, 0.55, 0, w); mesh(new THREE.BoxGeometry(0.24, 0.04, 0.05), M(0x3a2a1a), 0, 0.1, 0, w); }
     else if (L.weapon === "banner") { mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.6, 6), wood, 0, 0.6, 0, w); const fl = mesh(new THREE.PlaneGeometry(0.45, 0.6), M(0x8a1010, { side: THREE.DoubleSide }), 0.24, 1.15, 0, w); mesh(new THREE.CircleGeometry(0.1, 12), glow(0xff8a1a), 0.24, 1.18, 0.005, w); }
     else if (L.weapon === "club") { w.rotation.z = -0.4; mesh(new THREE.CylinderGeometry(0.04, 0.08, 0.7, 6), wood, 0, 0.35, 0, w); mesh(new THREE.DodecahedronGeometry(0.12, 0), wood, 0, 0.72, 0, w); }
@@ -950,7 +955,7 @@ function buildTimeline() {
   RECRUITS.forEach(([name, role]) => { const d = document.createElement("div"); d.className = "rl"; d.textContent = name; const sm = document.createElement("small"); sm.textContent = role.toUpperCase(); d.append(sm); rl.append(d); });
   if (HORDE) { const d = document.createElement("div"); d.className = "rl"; d.style.color = "var(--gold)"; d.textContent = "+" + HORDE; const sm = document.createElement("small"); sm.textContent = "WEITERE ORKS"; d.append(sm); rl.append(d); }
   show("#neworks", 8.6, 10.75); pop("#neworks", 8.6);
-  tl.fromTo("#rolllist .rl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out", stagger: 0.075 }, warp(8.7));
+  tl.fromTo("#rolllist .rl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out", stagger: 0.05 }, warp(8.7));
   tl.fromTo("#neworksnum", { scale: 1 }, { scale: 1.2, duration: 0.15, yoyo: true, repeat: 1 }, warp(9.4));
   out("#neworks", 10.55);
   // right hand
