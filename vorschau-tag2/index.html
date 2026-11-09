@@ -455,6 +455,7 @@ const flames = [];
   g.position.set(x, 0, z); scene.add(g);
 });
 
+let sauShadow;
 // ---------- Sauron ----------
 const sau = new THREE.Group(), sauArm = new THREE.Group(), eyesAngry = new THREE.Group(), eyesShock = new THREE.Group();
 const mace = new THREE.Group(), sword = new THREE.Group(), blueprint = new THREE.Group();
@@ -539,7 +540,7 @@ let cape, capeBase;
   for (let i = 0; i < cp.count; i++) { const x = cp.getX(i), y = cp.getY(i), v = (0.725 - y) / 1.45, w = 0.55 + 0.45 * v, a = (x / 0.75) * 1.25; cp.setXYZ(i, Math.sin(a) * 0.55 * w + x * 0.15 * v, y, -Math.cos(a) * 0.38 * w - 0.12 - 0.05 * Math.sin(x * 14) * v); }
   capeBase.set(cp.array); cg.computeVertexNormals();
   cape = new THREE.Mesh(cg, red); cape.position.set(0, 0.73, -0.02); sau.add(cape);
-  const shadow = mesh(new THREE.CircleGeometry(0.75, 20), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.45 }), 0, 0.04, 0); shadow.rotation.x = -Math.PI / 2;
+  sauShadow = mesh(new THREE.CircleGeometry(0.75, 20), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.45 }), 0, 0.04, 0); sauShadow.rotation.x = -Math.PI / 2;
   scene.add(sau);
 }
 
@@ -587,15 +588,44 @@ const elves = new THREE.Group(), elfList = [];
 }
 
 // ---------- day 2 set: the wall stands, new orcs, riders, stall (A) and watchtower (B) ----------
-const wallBlocks = [];
+// zone 2: the great wall (its front faces the elves = local -z); the elves share its frame
+const FRONT = new THREE.Group(); FRONT.position.set(-20, 0, 2); FRONT.rotation.y = Math.PI / 2; scene.add(FRONT); FRONT.updateMatrixWorld(true);
+const FW = (x, y, z) => FRONT.localToWorld(new THREE.Vector3(x, y, z));
+elves.position.copy(FRONT.position); elves.rotation.copy(FRONT.rotation);
+const WZ = -8, WH = 6.2, WL = 12;
 {
-  const stone = std(0x6b6460);
-  for (let i = 0; i < 9; i++) { const row = i < 6 ? 0 : 1, col = row ? (i - 6) * 2 + 0.5 : i; const b = mesh(new THREE.BoxGeometry(0.55, 0.42, 0.45), i % 2 ? stone : std(0x77706a), -1.4 + col * 0.56, 0.21 + row * 0.42, 1.7); wallBlocks.push(b); }
-  const shaft = std(0x5a3a1a), fl = std(0xeeeeee);
-  for (let i = 0; i < 9; i++) {
-    const a = new THREE.Group(); a.position.set(-1.3 + i * 0.33, 0.25 + (i * 37 % 5) * 0.12, 1.95); a.rotation.set(-0.5 - (i % 3) * 0.12, 0, (i % 2 ? 0.2 : -0.2));
-    mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.5, 4), shaft, 0, 0.25, 0, a); mesh(new THREE.BoxGeometry(0.06, 0.1, 0.005), fl, 0, 0.47, 0, a); scene.add(a);
+  const stone = std(0x5e5752), stone2 = std(0x6b6460), dark = std(0x2e2826), shaft = std(0x5a3a1a), fletch = std(0xeeeeee);
+  mesh(new THREE.BoxGeometry(WL * 2, WH, 2.0), stone, 0, WH / 2, WZ, FRONT);
+  for (let y = 0.7; y < WH; y += 0.7) mesh(new THREE.BoxGeometry(WL * 2 + 0.02, 0.05, 2.02), dark, 0, y, WZ, FRONT);
+  for (let x = -WL + 0.4; x <= WL - 0.4; x += 0.9) mesh(new THREE.BoxGeometry(0.55, 0.7, 0.45), stone2, x, WH + 0.35, WZ - 0.78, FRONT);
+  [-6.5, 6.5].forEach(x => {
+    mesh(new THREE.CylinderGeometry(1.9, 2.2, 9.5, 12), stone, x, 4.75, WZ, FRONT);
+    for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2; mesh(new THREE.BoxGeometry(0.55, 0.65, 0.55), stone2, x + Math.cos(a) * 1.85, 9.8, WZ + Math.sin(a) * 1.85, FRONT); }
+    mesh(new THREE.ConeGeometry(2.3, 3.2, 12), std(0x2a1414), x, 11.7, WZ, FRONT);
+    mesh(new THREE.ConeGeometry(0.1, 1.6, 5), metal(0x1d1c22), x, 13.9, WZ, FRONT);
+    const tl3 = new THREE.PointLight(0xff8a2a, 8, 9); tl3.position.set(x, 7, WZ - 2.6); FRONT.add(tl3);
+    mesh(new THREE.BoxGeometry(0.4, 0.9, 0.05), glow(0xff8a2a), x, 6.6, WZ - 2.05, FRONT); mesh(new THREE.BoxGeometry(0.4, 0.9, 0.05), glow(0xff8a2a), x, 3.6, WZ - 2.15, FRONT);
+  });
+  mesh(new THREE.BoxGeometry(3.2, 3.8, 0.2), std(0x1a100a), 0, 1.9, WZ - 1.01, FRONT);
+  for (let k = 0; k < 7; k++) mesh(new THREE.BoxGeometry(0.09, 3.8, 0.09), metal(0x3a3a40), -1.35 + k * 0.45, 1.9, WZ - 1.12, FRONT);
+  for (let i = 0; i < 110; i++) {
+    const a = new THREE.Group(); a.position.set(-WL + 0.5 + R() * (WL * 2 - 1), 0.4 + R() * (WH - 0.8), WZ - 1.0);
+    a.rotation.set(-Math.PI / 2 + (R() - 0.5) * 0.6, 0, (R() - 0.5) * 0.6);
+    mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.7, 4), shaft, 0, 0.35, 0, a); mesh(new THREE.BoxGeometry(0.07, 0.12, 0.006), fletch, 0, 0.64, 0, a); FRONT.add(a);
   }
+  [-3.4, 3.4].forEach(x => { const b = mesh(new THREE.PlaneGeometry(1.5, 3.4), std(0x6e0c10, { side: THREE.DoubleSide }), x, WH - 2.0, WZ - 1.03, FRONT); b.rotation.y = Math.PI; const e2 = mesh(new THREE.CircleGeometry(0.42, 18), glow(0xff8a1a), x, WH - 1.5, WZ - 1.05, FRONT); e2.rotation.y = Math.PI; });
+}
+const WALL_TOP = FW(0, WH, WZ + 0.25);
+// zone 3: the war camp
+const CAMP = new THREE.Vector3(22, 0, 12);
+const PODIUM = new THREE.Vector3(CAMP.x, 0.5, CAMP.z + 3.6);
+const SAU_HOME = new THREE.Vector3(0, 0, 0);
+{
+  const rock = mesh(new THREE.DodecahedronGeometry(1.0, 0), std(0x2b201c), PODIUM.x, 0.18, PODIUM.z); rock.scale.set(1.2, 0.5, 1.0);
+  const tentM = [std(0x4a2a1a), std(0x3a1414)];
+  [[-9.5, -5], [9.5, -5], [-11.5, 0], [11.5, 0], [-9, -11], [9, -11], [-12, -8], [12, -8]].forEach(([x, z], k) => { const tn = mesh(new THREE.ConeGeometry(1.3, 1.9, 4), tentM[k % 2], CAMP.x + x, 0.95, CAMP.z + z); tn.rotation.y = 0.3 * k; mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.7, 4), std(0x3a2a1a), CAMP.x + x, 2.2, CAMP.z + z); });
+  [[-4.2, 5.2], [4.2, 5.2], [-7.5, -2], [7.5, -2]].forEach(([x, z]) => { mesh(new THREE.CylinderGeometry(0.04, 0.04, 3.2, 5), std(0x2a1a10), CAMP.x + x, 1.6, CAMP.z + z); const fl = mesh(new THREE.PlaneGeometry(0.8, 1.3), std(0x6e0c10, { side: THREE.DoubleSide }), CAMP.x + x + 0.42, 2.6, CAMP.z + z); mesh(new THREE.CircleGeometry(0.2, 14), glow(0xff8a1a), CAMP.x + x + 0.42, 2.7, CAMP.z + z + 0.01); });
+  [[-1.8, 4.4], [1.8, 4.4]].forEach(([x, z]) => { const g = new THREE.Group(); mesh(new THREE.CylinderGeometry(0.05, 0.07, 1.4, 5), std(0x2a1a10), 0, 0.7, 0, g); const f = mesh(new THREE.ConeGeometry(0.16, 0.5, 6), glow(0xffb02a), 0, 1.66, 0, g); flames.push(f); const l = new THREE.PointLight(0xff8a2a, 6, 6); l.position.y = 1.8; g.add(l); f.userData.light = l; g.position.set(CAMP.x + x, 0, CAMP.z + z); scene.add(g); });
 }
 // recruits: one figure per new follower, styled by role
 const orcs = [];
@@ -704,6 +734,18 @@ const orcs = [];
     o.rotation.y = -x * 0.06; o.visible = false; scene.add(o); orcs.push(o);
   });
 }
+{
+  const BIG = new Set(["dragon", "dragon2", "balrog", "troll", "olog", "giant"]);
+  const flank = [[-9.2, -2.6], [9.2, -2.6], [-9.6, -7.6], [9.6, -7.6], [-12.5, -11], [12.5, -11], [-10.5, -14.5], [10.5, -14.5]];
+  let fi = 0, ri = 0;
+  RECRUITS.forEach(([n2, r2, kind], i) => {
+    const o = orcs[i]; if (!o) return; let x, z;
+    if (BIG.has(kind)) { [x, z] = flank[fi++ % flank.length]; } else { const row = Math.floor(ri / 11), col = ri % 11; x = (col - 5) * 1.35 + (row % 2) * 0.6; z = 1.6 - row * 1.3; ri++; }
+    o.userData.slot.set(CAMP.x + x, 0, CAMP.z + z);
+    if (o.userData.dragon) o.userData.start.add(CAMP); else o.userData.start.set(CAMP.x + x * 0.3, 0, CAMP.z - 22 - i * 0.4);
+    o.rotation.y = -x * 0.025;
+  });
+}
 // featured warriors: golden ring + light + name tag
 const FT = [];
 {
@@ -747,7 +789,7 @@ function hordeAt(m, t) {
   const hungry = ramp(m, 11.4, 11.8) - ramp(m, 13.9, 14.3);
   horde.slots.forEach(([x, z, ph, sc], i) => {
     const row = Math.floor(i / 22), t0 = 8.6 + row * 0.12, k = ease(ramp(m, t0, t0 + 1.3));
-    const px = x * (0.4 + 0.6 * k), pz = z - (1 - k) * 14, bob = k < 1 ? Math.abs(Math.sin((m - t0) * 12 + ph)) * 0.06 : 0.01 * Math.sin(t * 4 + ph);
+    const px = CAMP.x + x * (0.4 + 0.6 * k), pz = CAMP.z + z - (1 - k) * 14, bob = k < 1 ? Math.abs(Math.sin((m - t0) * 12 + ph)) * 0.06 : 0.01 * Math.sin(t * 4 + ph);
     const put = (mesh, oy, oz, rx = 0, rz = 0, sx = 1) => { _he.set(rx + 0.3 * hungry * (oy > 0.8 ? 1 : 0), 0, rz); _hq.setFromEuler(_he); _hs.set(sc * sx, sc, sc); _hp.set(px, (oy + bob) * sc, pz + oz * sc); _hm.compose(_hp, _hq, _hs); mesh.setMatrixAt(i, _hm); };
     put(horde.meshes[0], 0.31, 0); put(horde.meshes[1], 0.74, 0.01); put(horde.meshes[2], 0.78, 0, 0, 0.3 * Math.sin(ph)); put(horde.meshes[3], 0.75, 0.05, 0, 0.1); put(horde.meshes[4], 0.76, 0.14);
   });
@@ -768,10 +810,10 @@ const riders = new THREE.Group(), riderList = [];
     mesh(new THREE.SphereGeometry(0.13, 8, 6), iron, 0, 1.97, -0.05, r);
     mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.9, 4), iron, 0.25, 1.9, 0.1, r);
     mesh(new THREE.ConeGeometry(0.07, 0.2, 5), torchM, -0.25, 2.05, 0.05, r);
-    r.userData.base = new THREE.Vector3(-9 + i * 1.3, 0, -15.5 - (i % 2) * 1.2);
+    r.userData.base = new THREE.Vector3(CAMP.x - 4 + i * 1.3, 0, CAMP.z - 19 - (i % 2) * 1.2);
     r.rotation.y = 0.15; riders.add(r); riderList.push(r);
   }
-  const rl = new THREE.PointLight(0xffa040, 0, 18); rl.position.set(-5, 3, -13); riders.add(rl); riders.userData.light = rl;
+  const rl = new THREE.PointLight(0xffa040, 0, 18); rl.position.set(CAMP.x, 3, CAMP.z - 17); riders.add(rl); riders.userData.light = rl;
   scene.add(riders);
 }
 // option A: stall with pigs
@@ -787,7 +829,7 @@ const stall = new THREE.Group();
     const b = mesh(new THREE.SphereGeometry(0.2, 10, 8), pig, 0, 0.25, 0, p); b.scale.set(1, 0.8, 1.3);
     mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.06, 8), std(0xd07070), 0, 0.27, 0.27, p).rotation.x = Math.PI / 2;
     [[-0.08, -0.12], [0.08, -0.12], [-0.08, 0.12], [0.08, 0.12]].forEach(([lx, lz]) => mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.14, 5), pig, lx, 0.07, lz, p)); });
-  stall.position.set(-3.3, 0, 2.9); stall.scale.setScalar(1e-4); scene.add(stall);
+  stall.position.set(CAMP.x - 7.5, 0, CAMP.z + 5.5); stall.scale.setScalar(1e-4); scene.add(stall);
 }
 // option B: watchtower with an archer
 const watch = new THREE.Group();
@@ -802,13 +844,13 @@ const watch = new THREE.Group();
   mesh(new THREE.CylinderGeometry(0.12, 0.15, 0.45, 7), cloth, 0, 2.95, 0.2, watch);
   mesh(new THREE.SphereGeometry(0.11, 8, 6), std(0x4f7a2e), 0, 3.27, 0.2, watch);
   const bow = mesh(new THREE.TorusGeometry(0.22, 0.015, 4, 12, Math.PI), wood, 0.15, 3.0, 0.42, watch); bow.rotation.z = -Math.PI / 2;
-  watch.position.set(3.4, 0, 3.0); watch.scale.setScalar(1e-4); scene.add(watch);
+  watch.position.set(CAMP.x + 7.5, 0, CAMP.z + 5.5); watch.scale.setScalar(1e-4); scene.add(watch);
 }
 // golden question marks over the right-hand candidates
 const goldQ = canvasTex(128, 128, (c, w, h) => { c.font = "bold 110px Georgia"; c.textAlign = "center"; c.textBaseline = "middle"; c.lineWidth = 10; c.strokeStyle = "#2a1200"; c.strokeText("?", w / 2, h / 2 + 6); const g = c.createLinearGradient(0, 10, 0, 118); g.addColorStop(0, "#fff3c0"); g.addColorStop(0.5, "#ffb02a"); g.addColorStop(1, "#c04000"); c.fillStyle = g; c.fillText("?", w / 2, h / 2 + 6); });
 const RH_PICKS = [0, 1, 7, 11, 12].map(i => { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: goldQ, depthTest: false, fog: false })); sp.visible = false; sp.renderOrder = 5; scene.add(sp); return { i, sp }; });
 const _box = new THREE.Box3();
-const PLATZ_GHOST = GHOSTS[0]; PLATZ_GHOST.position.set(0.9, 0, -1.7);
+const PLATZ_GHOST = GHOSTS[0]; PLATZ_GHOST.position.set(CAMP.x + 8.6, 0, CAMP.z + 1.6);
 
 // Embers + ash
 const EMB = 160, embBase = new Float32Array(EMB * 4);
@@ -818,42 +860,45 @@ scene.add(new THREE.Points(embGeo, new THREE.PointsMaterial({ color: 0xffb347, s
 
 // ---------- camera path: [time, position, target] ----------
 const E = EYE_WORLD;
+const CP = (x, y, z) => [CAMP.x + x, y, CAMP.z + z];
+const FWa = (x, y, z) => { const v = FW(x, y, z); return [v.x, v.y, v.z]; };
+const SC = (dx, dist, up = 0) => [CP(dx, 2.75 + up, 3.6 + dist), CP(0, 2.45 + up * 0.3, 3.6)];
 const K = [
   [0.0, [E.x - 4.5, E.y - 4.0, E.z + 17.0], [E.x, E.y - 2.0, E.z]],
-  [1.2, [E.x - 3.8, E.y - 4.4, E.z + 14.5], [E.x, E.y - 2.2, E.z]],
-  [2.3, [0.8, 2.4, 8.0], [0, 1.0, 1.5]],
-  [3.9, [-0.6, 2.2, 7.2], [0, 1.0, 1.5]],
-  [4.3, [0.4, 2.0, 5.4], [0, 2.1, 0]],
-  [5.2, [-0.2, 1.95, 5.1], [0, 2.1, 0]],
-  [5.7, [-1.5, 2.6, 8.0], [-4, 2.0, -14]],
-  [6.7, [-1.9, 2.8, 7.6], [-4, 2.0, -14]],
-  [7.1, [0.6, 2.25, 6.6], [0, 1.95, 0]],
-  [8.3, [-0.3, 2.2, 6.3], [0, 1.95, 0]],
-  [8.9, [2.6, 3.0, 8.4], [0, 0.8, -1]],
-  [10.0, [0.5, 4.2, 9.5], [0, 1.2, -1.0]],
-  [10.6, [0.3, 9.5, 9.0], [0, 0.0, -6.5]],
-  [11.2, [-2.6, 9.0, 8.6], [0, 0.0, -6.5]],
-  [11.8, [-0.6, 2.7, 7.8], [0, 0.95, -0.3]],
-  [12.9, [0.6, 2.6, 7.4], [0, 0.95, -0.3]],
-  [13.4, [0.4, 2.5, 6.6], [0, 2.3, 0]],
-  [14.3, [-0.2, 2.5, 6.4], [0, 2.3, 0]],
-  [14.9, [-1.5, 2.6, 8.0], [-4, 2.0, -14]],
-  [16.0, [-1.9, 2.8, 7.6], [-4, 2.0, -14]],
-  [16.6, [0, 4.4, 10.2], [0, 1.0, 0]],
-  [18.9, [1.5, 4.8, 9.8], [0, 1.0, 0]],
-  [19.4, [0.4, 2.25, 6.0], [0, 1.95, 0]],
-  [21.9, [-0.6, 2.2, 5.6], [0, 1.95, 0]],
-  [22.4, [-2.0, 2.4, 8.0], [-3.3, 0.7, 2.9]],
-  [23.6, [-2.8, 2.3, 7.6], [-3.3, 0.7, 2.9]],
-  [24.1, [1.4, 3.6, 12.2], [3.4, 2.0, 3.0]],
-  [26.2, [2.2, 3.6, 11.8], [3.4, 2.0, 3.0]],
-  [27.0, [0, 6.5, 15], [-2, 2.5, -6]],
-  [29.1, [1.2, 7.0, 15.8], [-2, 2.5, -6]]
+  [2.249, [E.x - 3.6, E.y - 4.5, E.z + 14.0], [E.x, E.y - 2.2, E.z]],
+  [2.25, FWa(9.5, 0.9, -27), FWa(0.5, 5.2, -8)],
+  [3.9, FWa(7.0, 1.1, -24), FWa(0.3, 5.6, -8)],
+  [4.3, FWa(1.0, 7.7, -12.6), FWa(0, 7.85, -7.8)],
+  [5.2, FWa(0.5, 7.7, -12.3), FWa(0, 7.85, -7.8)],
+  [5.7, FWa(2.6, 11.5, -6.8), FWa(-2, 0.6, -17)],
+  [6.7, FWa(2.2, 11.8, -6.6), FWa(-2, 0.6, -19)],
+  [7.0, FWa(0.6, 7.6, -12.0), FWa(0, 7.85, -7.8)],
+  [8.349, FWa(0.2, 7.55, -11.6), FWa(0, 7.85, -7.8)],
+  [8.35, CP(0, 4.2, 12), CP(0, 1.2, -2)],
+  [10.0, CP(0.6, 5.5, 12.5), CP(0, 0.8, -4)],
+  [10.6, CP(0.3, 8.5, 11.5), CP(0, 0, -6)],
+  [11.2, CP(-3, 8, 11), CP(0, 0, -6)],
+  [11.8, ...SC(-0.5, 6.5)],
+  [12.9, ...SC(0.5, 6.2)],
+  [13.4, ...SC(0.4, 7.2, 0.3)],
+  [14.3, ...SC(-0.2, 7.0, 0.3)],
+  [14.9, CP(-2, 3.4, 10), CP(0, 2, -19)],
+  [16.0, CP(-2.4, 3.6, 9.6), CP(0, 2, -19)],
+  [16.6, CP(0, 6, 18), CP(0, 1, 0)],
+  [18.9, CP(1.5, 6.5, 17.5), CP(0, 1, 0)],
+  [19.4, ...SC(0.4, 6.2)],
+  [21.9, ...SC(-0.6, 5.8)],
+  [22.4, CP(-5.5, 2.8, 12.5), CP(-7.5, 0.9, 5.5)],
+  [23.6, CP(-6.6, 2.7, 12), CP(-7.5, 0.9, 5.5)],
+  [24.1, CP(5.2, 4.2, 15), CP(7.5, 2.0, 5.5)],
+  [26.2, CP(6.4, 4.2, 14.5), CP(7.5, 2.0, 5.5)],
+  [27.0, CP(0, 9, 23), CP(0, 1, -7)],
+  [29.1, CP(1.5, 9.5, 24), CP(0, 1, -7)]
 ].map(([t, p, q]) => [t, new THREE.Vector3(...p), new THREE.Vector3(...q)]);
 const _p = new THREE.Vector3(), _q = new THREE.Vector3();
 function cameraAt(m, t) {
   let i = 0; while (i < K.length - 2 && m > K[i + 1][0]) i++;
-  const [ta, pa, qa] = K[i], [tb, pb, qb] = K[i + 1], u = ease(ramp(m, ta, tb));
+  const [ta, pa, qa] = K[i], [tb, pb, qb] = K[i + 1], u = tb - ta < 0.005 ? 1 : ease(ramp(m, ta, tb));
   _p.lerpVectors(pa, pb, u); _q.lerpVectors(qa, qb, u);
   _p.x += Math.sin(t * 0.7) * 0.05; _p.y += Math.sin(t * 0.9 + 1) * 0.035;
   camera.position.copy(_p); camera.lookAt(_q);
@@ -885,7 +930,8 @@ function renderAt(t) {
 
   // Sauron: triumph at "gehalten", sag at "null", shock at the riders, scroll for the vote
   const hop = bump(m, 4.5, 0.3, 0.3) + bump(m, 9.4, 0.25, 0.22) + bump(m, 15.45, 0.3, 0.3);
-  sau.position.y = 0.02 * Math.sin(t * 6) + hop;
+  const SP = m < 2.25 ? SAU_HOME : (m < 8.35 ? WALL_TOP : PODIUM), sauYaw = (m >= 2.25 && m < 8.35) ? -Math.PI / 2 : 0;
+  sau.position.set(SP.x, SP.y + 0.02 * Math.sin(t * 6) + hop, SP.z); sauShadow.position.set(SP.x, SP.y + 0.04, SP.z);
   sau.scale.y = 1 - 0.06 * bump(m, 13.75, 0.4, 1);
   const holdsPlan = live(m, 19.1, 21.95);
   sword.visible = false; mace.visible = !holdsPlan; blueprint.visible = holdsPlan;
@@ -918,7 +964,7 @@ function renderAt(t) {
   // elves retreat at dawn
   const elfOn = m < 6.8;
   elves.visible = elfOn; elves.userData.light.intensity = elfOn ? 12 : 0;
-  elfList.forEach((e, i) => { const back = ease(ramp(m, 5.3, 6.8)); e.position.copy(e.userData.base); e.position.z -= back * 10; e.rotation.y = 0.35 + Math.PI * Math.min(1, back * 3); });
+  elfList.forEach((e, i) => { const back = ease(ramp(m, 5.3, 6.8)); e.position.copy(e.userData.base); e.position.z -= back * 4.5; e.rotation.y = 0.35 + Math.PI * Math.min(1, back * 3); });
   // riders appear at night and advance at the end
   const ridOn = live(m, 14.6, 16.2) || m >= 26.4;
   riders.visible = ridOn; riders.userData.light.intensity = ridOn ? 20 : 0;
@@ -934,13 +980,13 @@ function renderAt(t) {
     const shot = k => { const f = FT[k]; _fb.setFromObject(f.o); const c = new THREE.Vector3((_fb.min.x + _fb.max.x) / 2, 0, (_fb.min.z + _fb.max.z) / 2), h = _fb.max.y - _fb.min.y;
       return [new THREE.Vector3(c.x + 0.3 * h, h * 1.5 + 1.6, c.z + 1.5 * h + 2.4), new THREE.Vector3(c.x, h * 0.5, c.z)]; };
     const k = Math.floor((t - RW[0] - 0.4) / seg);
-    if (k < 0 || !FT.length) { const a = -0.6 + u * 1.2; camera.position.set(Math.sin(a) * 9.4, 4.8 - u * 0.6, Math.cos(a) * 9.4 + 0.4); camera.lookAt(0, 1.3, -1.6); }
+    if (k < 0 || !FT.length) { const a = -0.6 + u * 1.2; camera.position.set(CAMP.x + Math.sin(a) * 12, 6.5 - u * 0.8, CAMP.z + Math.cos(a) * 12 + 1.5); camera.lookAt(CAMP.x, 1.3, CAMP.z - 2); }
     else { const kk = Math.min(k, FT.length - 1), [p1, q1] = shot(kk), local = ramp(t - RW[0] - 0.4 - kk * seg, 0, 0.35);
-      let p0, q0; if (kk === 0) { p0 = new THREE.Vector3(Math.sin(-0.6 + 0.2) * 9.4, 4.6, Math.cos(-0.4) * 9.4 + 0.4); q0 = new THREE.Vector3(0, 1.3, -1.6); } else { [p0, q0] = shot(kk - 1); }
+      let p0, q0; if (kk === 0) { p0 = new THREE.Vector3(CAMP.x + Math.sin(-0.4) * 12, 6.3, CAMP.z + Math.cos(-0.4) * 12 + 1.5); q0 = new THREE.Vector3(CAMP.x, 1.3, CAMP.z - 2); } else { [p0, q0] = shot(kk - 1); }
       const e2 = ease(local); camera.position.lerpVectors(p0, p1, e2); _q.lerpVectors(q0, q1, e2); camera.position.x += Math.sin(t * 0.7) * 0.04; camera.lookAt(_q); }
     sau.rotation.z = t >= V.rhWie ? 0.13 * Math.sin((t - V.rhWie) * 3.2) : 0;
-    sau.rotation.y = 0.35 * Math.sin(u * Math.PI * 2);
-  } else { sau.rotation.z = 0; sau.rotation.y = 0; }
+    sau.rotation.y = sauYaw + 0.35 * Math.sin(u * Math.PI * 2);
+  } else { sau.rotation.z = 0; sau.rotation.y = sauYaw; }
   RH_PICKS.forEach(({ i, sp }, k) => {
     const o = orcs[i]; const on = false;
     sp.visible = !!on; if (!on) return;
