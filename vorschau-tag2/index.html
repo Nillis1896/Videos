@@ -138,10 +138,10 @@
   #cardA { left: 150px; } #cardB { right: 150px; }
   #oder { position: absolute; z-index: 2; left: 0; right: 0; top: 250px; text-align: center; font: 900 50px/1 var(--font-rune); }
 
-  #roll { margin-top: 16px; width: 880px; padding: 20px 30px 22px; }
-  #rolllist { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 22px; }
-  .rl { font: 900 31px/1.1 var(--font-engrave); overflow-wrap: anywhere; color: #e9dfcf; text-shadow: 0 2px 0 #000; }
-  .rl small { display: block; font: 700 19px/1.2 var(--font-engrave); letter-spacing: .16em; color: var(--gold); }
+  #roll { margin-top: 14px; width: 930px; padding: 18px 26px 20px; }
+  #rolllist { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px 16px; }
+  .rl { font: 900 26px/1.08 var(--font-engrave); overflow-wrap: anywhere; color: #e9dfcf; text-shadow: 0 2px 0 #000; }
+  .rl small { display: block; font: 700 15px/1.2 var(--font-engrave); letter-spacing: .16em; color: var(--gold); }
   .cap { position: absolute; left: 90px; right: 150px; top: 1215px; text-align: center; visibility: hidden; opacity: 0; }
   .cap > div { display: inline-block; font: 84px/1.05 var(--font-display); color: #fff; }
   .cap .g { color: var(--gold); } .cap .r { color: var(--danger); }
@@ -293,7 +293,10 @@ const RECRUITS = [
   ["Niklas", "Wargreiter", "warg"], ["Henrik", "Uruk-Hai", "uruk"], ["mb2008", "Trollhäuptling", "troll"], ["MaggiManni", "Olog-Hai", "olog"],
   ["Charles", "Smaug", "dragon"], ["Jona", "Riesen-Ork", "bigorc"], ["Pfanekuchen", "Kommandant", "commander"],
   ["Zueng", "Nazgûl", "wraith"], ["Edangelo", "Kommandant", "commander"], ["Zoll", "Offizier", "officer"],
-  ["Hosain", "Ritter", "knight"], ["m.Thomm", "Ork-General", "general"], ["Søren", "Uruk-Hai", "uruk"], ["Christian", "Nazgûl", "wraith"], ["Marvin", "Glockenwächter", "bell"]
+  ["Hosain", "Ritter", "knight"], ["m.Thomm", "Ork-General", "general"], ["Søren", "Uruk-Hai", "uruk"], ["Christian", "Nazgûl", "wraith"], ["Marvin", "Glockenwächter", "bell"],
+  ["Shadow", "Leibwächter", "guard"], ["007James", "Feldmarschall", "marshal"], ["Travisschoko", "Bester Krieger", "champion"], ["Fil", "Magischer Ork", "shaman"],
+  ["nihil66", "Isildur", "isildur"], ["caspar", "Balrog", "balrog"], ["ig", "Uruk-Hai", "uruk"], ["chiko", "Koch", "cook"],
+  ["caraxes", "Bester Bogenschütze", "archer"], ["tobiwankenobi", "Reiter", "horseman"], ["patrickgrabner", "Drache", "dragon2"], ["angel", "Uruk-Hai", "uruk"], ["krieger", "Ork-General", "general"]
 ];
 const FOLLOWERS = 404;   // aktuelle Follower-Zahl
 const NEW_ORKS = RECRUITS.length;
@@ -591,7 +594,7 @@ const wallBlocks = [];
 const orcs = [];
 {
   const M = (c, o) => std(c, { flatShading: false, ...o });
-  const SLOTS = [[-1.7, -0.4], [1.8, -0.5], [-2.7, 0.5], [-3.8, -1.8], [2.8, 0.4], [-1.2, 1.0], [1.3, 1.0], [3.6, -1.0], [-4.4, 1.0], [2.4, -1.5], [3.9, -2.7], [-1.5, -2.9], [2.6, -6.2], [1.3, -2.8], [4.3, 1.3], [-3.3, -3.3], [-4.6, 2.4], [0.0, -4.0], [3.0, -4.3], [-4.4, -2.6], [4.6, -2.4], [-1.2, -1.4], [4.8, -0.2], [-5.0, -0.6]];
+  const SLOTS = [[-1.7, -0.4], [1.8, -0.5], [-2.7, 0.5], [-3.8, -1.8], [2.8, 0.4], [-1.2, 1.0], [1.3, 1.0], [3.6, -1.0], [-4.4, 1.0], [2.4, -1.5], [3.9, -2.7], [-1.5, -2.9], [2.6, -6.2], [1.3, -2.8], [4.3, 1.3], [-3.3, -3.3], [-4.6, 2.4], [0.0, -4.0], [3.0, -4.3], [-4.4, -2.6], [4.6, -2.4], [-1.2, -1.4], [4.8, -0.2], [-5.0, -0.6], [0.8, -1.3], [-2.4, -2.2], [1.9, -3.4], [-3.0, -4.6], [-0.6, -3.2], [-7.4, -3.8], [3.6, -3.6], [-5.6, 1.4], [5.6, 1.0], [6.0, -1.6], [-3.6, -7.6], [-0.6, -5.0], [1.0, -5.4]];
   const LOOK = {
     wraith:  { skin: 0x111014, body: 0x141218, robe: 0x0e0d10, head: "crown", eyes: 0x9fd8ff, weapon: "sword", scale: 1.15 },
     white:   { skin: 0xd8c2a8, body: 0xe8e6e0, robe: 0xf2f0ea, head: "hair", beard: 0xf0f0f0, weapon: "staffdark", scale: 1.1 },
@@ -608,13 +611,23 @@ const orcs = [];
     officer: { skin: 0x4f7a2e, body: 0x3a2a1a, head: "helm", eyes: 0xff3a1a, weapon: "sword", cape: true, scale: 1.05 },
     knight:  { skin: 0xd8b090, body: 0x8a8c94, head: "helm", weapon: "sword", armor: true, shield: true, scale: 1.08 },
     bell:    { skin: 0x4f7a2e, body: 0x3a2414, head: "bald", eyes: 0xff3a1a, weapon: "bell", scale: 1.05 },
+    guard:   { skin: 0x2e2a24, body: 0x1a1a1e, head: "helm", eyes: 0xff3a1a, weapon: "halberd", armor: true, scale: 1.3 },
+    marshal: { skin: 0x4f7a2e, body: 0x2a2b33, head: "plume", eyes: 0xff3a1a, weapon: "banner", cape: true, armor: true, gold: true, scale: 1.18 },
+    champion:{ skin: 0x2e2a24, body: 0x141218, head: "helm", eyes: 0xffd04a, weapon: "firesword", armor: true, gold: true, cape: true, scale: 1.35 },
+    shaman:  { skin: 0x4f7a2e, body: 0x1f3a1a, robe: 0x23401c, head: "bald", eyes: 0x7cff6a, weapon: "staffgreen", scale: 1.05 },
+    isildur: { skin: 0xd8b090, body: 0x8a8c94, head: "kingcrown", beard: 0x3a2a1a, weapon: "sword", armor: true, cape: true, scale: 1.1 },
+    balrog:  { skin: 0x1a0a06, body: 0x1a0a06, head: "demon", eyes: 0xffa020, weapon: "firesword", wings: true, scale: 2.3 },
+    cook:    { skin: 0x4f7a2e, body: 0xe8e2d4, head: "chef", eyes: 0xff3a1a, weapon: "pan", scale: 1.0 },
+    archer:  { skin: 0x2e2a24, body: 0x2a3a1e, head: "uruk", eyes: 0xff3a1a, weapon: "bow", scale: 1.1 },
+    horseman:{ skin: 0x4f7a2e, body: 0x3a2414, head: "helm", eyes: 0xff3a1a, weapon: "halberd", scale: 1.0 },
+    dragon2: { scale: 1.0 },
     dragon:  { scale: 1.0 }
   };
   RECRUITS.forEach(([name, role, kind], i) => {
     const L = LOOK[kind] || LOOK.uruk, [x, z] = SLOTS[i];
     const o = new THREE.Group(), body = new THREE.Group(); o.add(body);
-    if (kind === "dragon") {
-      const red = std(0x8a1a12, { flatShading: false }), belly = std(0xd8903a), horn = std(0xe8dcc0), wingM = std(0x5a0e0a, { side: THREE.DoubleSide });
+    if (kind === "dragon" || kind === "dragon2") {
+      const g2 = kind === "dragon2", red = std(g2 ? 0x1e4a24 : 0x8a1a12, { flatShading: false }), belly = std(g2 ? 0xa8b060 : 0xd8903a), horn = std(0xe8dcc0), wingM = std(g2 ? 0x10301a : 0x5a0e0a, { side: THREE.DoubleSide });
       const b = mesh(new THREE.SphereGeometry(0.9, 14, 10), red, 0, 1.6, 0, body); b.scale.set(1, 0.85, 1.6);
       mesh(new THREE.SphereGeometry(0.7, 12, 8), belly, 0, 1.35, 0.3, body).scale.set(0.9, 0.7, 1.3);
       const neck = mesh(new THREE.CylinderGeometry(0.25, 0.4, 1.4, 10), red, 0, 2.4, 1.3, body); neck.rotation.x = 0.7;
@@ -625,11 +638,12 @@ const orcs = [];
       [-1, 1].forEach(s2 => { const lg = mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.9, 6), red, s2 * 0.55, 0.45, s2 > 0 ? 0.6 : 0.6, body); mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.9, 6), red, s2 * 0.55, 0.45, -0.7, body); });
       const wings = [];
       [-1, 1].forEach(s2 => { const wg = new THREE.Group(); wg.position.set(s2 * 0.6, 2.1, 0.1); body.add(wg); const shape = new THREE.Shape(); shape.moveTo(0, 0); shape.lineTo(2.6, 0.9); shape.lineTo(3.2, -0.3); shape.lineTo(2.2, -0.8); shape.lineTo(1.4, -0.6); shape.lineTo(0.6, -1.0); shape.lineTo(0, -0.4); const wm = new THREE.Mesh(new THREE.ShapeGeometry(shape), wingM); wm.rotation.x = -Math.PI / 2; wm.scale.x = s2; wg.add(wm); wings.push(wg); });
-      o.userData = { slot: new THREE.Vector3(x, 0, z), start: new THREE.Vector3(-22, 14, -34), body, dragon: true, wings };
-      o.rotation.y = -0.9; o.scale.setScalar(1.2); o.visible = false; scene.add(o); orcs.push(o); return;
+      o.userData = { slot: new THREE.Vector3(x, 0, z), start: g2 ? new THREE.Vector3(24, 16, -30) : new THREE.Vector3(-22, 14, -34), body, dragon: true, wings };
+      o.rotation.y = g2 ? 0.8 : -0.9; o.scale.setScalar(1.2); o.visible = false; scene.add(o); orcs.push(o); return;
     }
-    if (kind === "warg") {
-      const fur = std(0x5a5650, { flatShading: false }), wg = new THREE.Group(); body.add(wg);
+    const mounted = kind === "warg" || kind === "horseman";
+    if (mounted) {
+      const horse = kind === "horseman", fur = std(horse ? 0x5a3a22 : 0x5a5650, { flatShading: false }), wg = new THREE.Group(); body.add(wg); if (horse) wg.scale.set(1.1, 1.25, 1.2);
       const wb = mesh(new THREE.SphereGeometry(0.42, 12, 8), fur, 0, 0.72, 0, wg); wb.scale.set(0.8, 0.75, 1.5);
       [[-0.2, 0.4], [0.2, 0.4], [-0.2, -0.4], [0.2, -0.4]].forEach(([lx, lz]) => mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.6, 6), fur, lx, 0.3, lz, wg));
       const wh = mesh(new THREE.BoxGeometry(0.3, 0.28, 0.5), fur, 0, 0.95, 0.72, wg);
@@ -639,7 +653,7 @@ const orcs = [];
       body.position.y = 0; wg.position.y = 0; body.userData.rider = 0.62;
     }
     const skin = M(L.skin), cloth = M(L.body), dark = M(0x1c1612), wood = M(0x5a3a1a), steel = metal(0x8a8c94);
-    const hb = kind === "warg" ? new THREE.Group() : body; if (kind === "warg") { hb.position.set(0, 0.55, 0); hb.scale.setScalar(0.85); body.add(hb); }
+    const hb = mounted ? new THREE.Group() : body; if (mounted) { hb.position.set(0, 0.55, 0); hb.scale.setScalar(0.85); body.add(hb); }
     if (L.robe) { mesh(new THREE.CylinderGeometry(0.17, 0.32, 0.8, 10), M(L.robe), 0, 0.4, 0, hb); }
     else { [-1, 1].forEach(s => mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.34, 6), dark, s * 0.1, 0.17, 0, body)); mesh(new THREE.CylinderGeometry(0.2, 0.24, 0.42, 8), cloth, 0, 0.55, 0, hb); }
     mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.08, 8), cloth, 0, 0.74, 0, hb);
@@ -659,11 +673,21 @@ const orcs = [];
     if (L.head === "helm") { mesh(new THREE.SphereGeometry(0.18, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.95, 0, hb); mesh(new THREE.BoxGeometry(0.03, 0.14, 0.2), steel, 0, 1.12, 0, hb); }
     if (L.shield) { const sh = mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 12), M(0x2a3a8a), -0.32, 0.55, 0.1, hb); sh.rotation.x = Math.PI / 2; mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.05, 8), metal(0xd0b060), -0.32, 0.55, 0.13, hb).rotation.x = Math.PI / 2; }
     if (L.armor) { mesh(new THREE.CylinderGeometry(0.26, 0.28, 0.36, 8), steel, 0, 0.58, 0, hb); [-1, 1].forEach(s2 => mesh(new THREE.SphereGeometry(0.12, 8, 6), steel, s2 * 0.27, 0.75, 0, hb)); }
+    if (L.head === "kingcrown") { mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.07, 12), metal(0xd8b040, { roughness: 0.25 }), 0, 1.06, 0, hb); for (let k = 0; k < 5; k++) { const a = k / 5 * Math.PI * 2; mesh(new THREE.ConeGeometry(0.025, 0.09, 4), metal(0xd8b040), Math.sin(a) * 0.16, 1.13, Math.cos(a) * 0.16, hb); } }
+    if (L.head === "chef") { mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.22, 12), M(0xffffff), 0, 1.15, 0, hb); mesh(new THREE.SphereGeometry(0.17, 10, 8), M(0xffffff), 0, 1.29, 0, hb); }
+    if (L.head === "demon") { [-1, 1].forEach(s2 => { const hn = mesh(new THREE.ConeGeometry(0.05, 0.36, 6), M(0x2a1a10), s2 * 0.16, 1.12, -0.02, hb); hn.rotation.z = -s2 * 0.6; hn.rotation.x = -0.3; }); mesh(new THREE.SphereGeometry(0.2, 10, 8), glow(0xff5a00), 0, 0.6, 0.12, hb).scale.set(0.6, 1, 0.3); const fl = new THREE.PointLight(0xff6a1a, 6, 3); fl.position.set(0, 0.8, 0.5); hb.add(fl); }
+    if (L.gold) { mesh(new THREE.TorusGeometry(0.25, 0.02, 6, 16), metal(0xd8b040, { roughness: 0.25 }), 0, 0.74, 0, hb).rotation.x = Math.PI / 2; }
+    if (L.wings) { [-1, 1].forEach(s2 => { const shp = new THREE.Shape(); shp.moveTo(0, 0); shp.lineTo(0.9, 0.5); shp.lineTo(1.1, -0.1); shp.lineTo(0.7, -0.3); shp.lineTo(0.3, -0.25); shp.lineTo(0, -0.1); const wm = mesh(new THREE.ShapeGeometry(shp), M(0x1a0a06, { side: THREE.DoubleSide }), s2 * 0.15, 0.85, -0.15, hb); wm.scale.x = s2; wm.rotation.y = s2 * 0.5; }); }
     if (L.head === "plume") { mesh(new THREE.SphereGeometry(0.175, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel, 0, 0.96, 0, hb); const pl = mesh(new THREE.BoxGeometry(0.04, 0.12, 0.3), M(0xc01818), 0, 1.15, -0.04, hb); }
     const w = new THREE.Group(); w.position.set(0.33, 0.42, 0.06); hb.add(w);
     if (L.weapon === "staffdark" || L.weapon === "staffglow") { mesh(new THREE.CylinderGeometry(0.02, 0.025, 1.3, 6), L.weapon === "staffdark" ? M(0x111111) : wood, 0, 0.4, 0, w); mesh(new THREE.SphereGeometry(0.05, 8, 6), L.weapon === "staffglow" ? glow(0xeaf4ff) : M(0x222222), 0, 1.06, 0, w); }
     else if (L.weapon === "axe") { w.rotation.z = -0.3; mesh(new THREE.CylinderGeometry(0.025, 0.03, 0.6, 6), wood, 0, 0.3, 0, w); mesh(new THREE.BoxGeometry(0.02, 0.16, 0.18), steel, 0, 0.58, 0.07, w); const sh = mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 12), M(0x8a2a1a), -0.62, 0.15, 0.05, w); sh.rotation.x = Math.PI / 2; }
     else if (L.weapon === "bell") { mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.6, 6), wood, 0, 0.6, 0, w); mesh(new THREE.BoxGeometry(0.4, 0.04, 0.04), wood, -0.18, 1.38, 0, w); const bl = mesh(new THREE.LatheGeometry([[0.0, 0.0], [0.17, 0.0], [0.15, 0.06], [0.11, 0.2], [0.09, 0.3], [0.0, 0.32]].map(([r, y]) => new THREE.Vector2(r, y)), 12), metal(0xb07a2a, { roughness: 0.3 }), -0.34, 1.02, 0, w); }
+    else if (L.weapon === "halberd") { mesh(new THREE.CylinderGeometry(0.022, 0.022, 1.7, 6), wood, 0, 0.6, 0, w); mesh(new THREE.BoxGeometry(0.02, 0.22, 0.2), steel, 0, 1.36, 0.08, w); mesh(new THREE.ConeGeometry(0.03, 0.2, 4), steel, 0, 1.55, 0, w); }
+    else if (L.weapon === "firesword") { w.rotation.z = -0.2; mesh(new THREE.BoxGeometry(0.07, 0.95, 0.02), glow(0xff7a1a), 0, 0.58, 0, w); mesh(new THREE.BoxGeometry(0.26, 0.05, 0.05), M(0x2a1a10), 0, 0.1, 0, w); const fl2 = new THREE.PointLight(0xff7a1a, 3, 2.5); fl2.position.set(0, 0.6, 0.2); w.add(fl2); }
+    else if (L.weapon === "staffgreen") { mesh(new THREE.CylinderGeometry(0.02, 0.025, 1.3, 6), wood, 0, 0.4, 0, w); mesh(new THREE.SphereGeometry(0.07, 8, 6), glow(0x7cff6a), 0, 1.08, 0, w); const gl2 = new THREE.PointLight(0x7cff6a, 3, 2.5); gl2.position.set(0, 1.1, 0.1); w.add(gl2); }
+    else if (L.weapon === "pan") { w.rotation.z = -0.5; mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.32, 6), wood, 0, 0.16, 0, w); mesh(new THREE.CylinderGeometry(0.14, 0.12, 0.04, 14), metal(0x2a2a2a), 0, 0.4, 0, w); }
+    else if (L.weapon === "bow") { w.position.set(-0.3, 0.6, 0.12); mesh(new THREE.TorusGeometry(0.35, 0.018, 4, 16, Math.PI), wood, 0, 0, 0, w).rotation.z = Math.PI / 2; mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.7, 3), M(0xdddddd), 0.0, 0, 0, w); const q = mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.4, 6), M(0x5a3a1a), 0.3, 0.25, -0.18, hb); q.rotation.z = 0.4; }
     else if (L.weapon === "bigsword") { w.rotation.z = -0.2; mesh(new THREE.BoxGeometry(0.07, 0.9, 0.02), steel, 0, 0.55, 0, w); mesh(new THREE.BoxGeometry(0.24, 0.04, 0.05), M(0x3a2a1a), 0, 0.1, 0, w); }
     else if (L.weapon === "banner") { mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.6, 6), wood, 0, 0.6, 0, w); const fl = mesh(new THREE.PlaneGeometry(0.45, 0.6), M(0x8a1010, { side: THREE.DoubleSide }), 0.24, 1.15, 0, w); mesh(new THREE.CircleGeometry(0.1, 12), glow(0xff8a1a), 0.24, 1.18, 0.005, w); }
     else if (L.weapon === "club") { w.rotation.z = -0.4; mesh(new THREE.CylinderGeometry(0.04, 0.08, 0.7, 6), wood, 0, 0.35, 0, w); mesh(new THREE.DodecahedronGeometry(0.12, 0), wood, 0, 0.72, 0, w); }
@@ -954,10 +978,10 @@ function buildTimeline() {
   const rl = document.getElementById("rolllist"); rl.textContent = "";
   RECRUITS.forEach(([name, role]) => { const d = document.createElement("div"); d.className = "rl"; d.textContent = name; const sm = document.createElement("small"); sm.textContent = role.toUpperCase(); d.append(sm); rl.append(d); });
   if (HORDE) { const d = document.createElement("div"); d.className = "rl"; d.style.color = "var(--gold)"; d.textContent = "+" + HORDE; const sm = document.createElement("small"); sm.textContent = "WEITERE ORKS"; d.append(sm); rl.append(d); }
-  show("#neworks", 8.6, 10.75); pop("#neworks", 8.6);
-  tl.fromTo("#rolllist .rl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out", stagger: 0.05 }, warp(8.7));
+  show("#neworks", 8.6, 11.0); pop("#neworks", 8.6);
+  tl.fromTo("#rolllist .rl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out", stagger: 0.035 }, warp(8.65));
   tl.fromTo("#neworksnum", { scale: 1 }, { scale: 1.2, duration: 0.15, yoyo: true, repeat: 1 }, warp(9.4));
-  out("#neworks", 10.55);
+  out("#neworks", 10.8);
   // right hand
   if (V.rh) { tl.set("#righthand", { visibility: "visible" }, V.rh[0] + 0.2); tl.set("#righthand", { visibility: "hidden" }, V.rh[1]);
     tl.fromTo("#righthand", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.2)" }, V.rh[0] + 0.2);
