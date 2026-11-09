@@ -337,7 +337,9 @@ const unwarp = t => mapTime(t, 1, 0);
 
 // ---------- renderer / scene ----------
 const canvas = document.getElementById("gl");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: false });
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" }); }
+catch (e) { const f = document.getElementById("fail"); f.textContent = "Dein Gerät kann die 3D-Vorschau nicht anzeigen (WebGL fehlt). Bitte am PC oder in einem anderen Browser öffnen."; f.style.display = "flex"; throw e; }
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 const scene = new THREE.Scene();
@@ -361,7 +363,7 @@ const moon = mesh(new THREE.CircleGeometry(4, 32), new THREE.MeshBasicMaterial({
 moon.lookAt(0, 0, 0);
 const hemi = new THREE.HemisphereLight(0xffb070, 0x2a1410, 1.4); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xff9a50, 2.2); sun.position.set(-8, 10, 12); scene.add(sun);
-const fill = new THREE.PointLight(0xffd0a0, 14, 12); fill.position.set(0.5, 2.6, 3.2); scene.add(fill);
+const fill = new THREE.PointLight(0xffd0a0, 14, 12); fill.position.set(0.5, 2.6, 3.2); fill.userData.keep = true; scene.add(fill);
 const rim = new THREE.DirectionalLight(0xff5a1a, 2.5); rim.position.set(3, 4, -6); scene.add(rim);
 
 // Ground, path, lava river, rocks, spikes, bones, dead trees, mountains, volcano
@@ -393,7 +395,7 @@ lavaTex.wrapS = lavaTex.wrapT = THREE.RepeatWrapping; lavaTex.repeat.set(10, 1);
   const lc = new THREE.CatmullRomCurve3([[-40, -16], [-22, -12], [-12, -15], [-6, -11], [6, -13], [16, -10], [40, -14]].map(([x, z]) => new THREE.Vector3(x, 0.05, z)));
   const g = new THREE.TubeGeometry(lc, 120, 0.9, 6, false); g.scale(1, 0.06, 1);
   const river = mesh(g, new THREE.MeshBasicMaterial({ map: lavaTex, fog: false })); river.position.y = 0.04;
-  const rl = new THREE.PointLight(0xff5a00, 30, 18); rl.position.set(-4, 1, -12); scene.add(rl);
+  const rl = new THREE.PointLight(0xff5a00, 30, 18); rl.position.set(-4, 1, -12); rl.userData.keep = true; scene.add(rl);
 }
 const lavaMat = glow(0xff6a1a);
 for (let i = 0; i < 26; i++) { const a = R() * Math.PI * 2, r = 5 + R() * 20; const m = mesh(new THREE.BoxGeometry(0.12, 0.05, 1.5 + R() * 2.5), lavaMat, Math.cos(a) * r, 0.04, Math.sin(a) * r - 3); m.rotation.y = R() * Math.PI; }
@@ -415,7 +417,7 @@ for (let i = 0; i < 26; i++) { const a = (i / 26) * Math.PI * 2 + R() * 0.2, r =
   mesh(new THREE.CylinderGeometry(1.6, 9, 12, 9, 1, true), std(0x2a1012, { side: THREE.DoubleSide }), 0, 6, 0, volcano);
   const crater = mesh(new THREE.CircleGeometry(1.6, 9), glow(0xff7a1a), 0, 11.9, 0, volcano); crater.rotation.x = -Math.PI / 2;
   for (let k = 0; k < 4; k++) { const s = mesh(new THREE.BoxGeometry(0.25, 4 + k, 0.1), glow(0xff5a00), Math.cos(k * 1.6) * 3, 8 - k, Math.sin(k * 1.6) * 3 + 2, volcano); s.rotation.z = 0.5 - k * 0.3; }
-  const vl = new THREE.PointLight(0xff6a1a, 60, 30); vl.position.y = 13; volcano.add(vl);
+  const vl = new THREE.PointLight(0xff6a1a, 60, 30); vl.position.y = 13; vl.userData.keep = true; volcano.add(vl);
   volcano.position.set(-14, 0, -30); scene.add(volcano);
 }
 // smoke columns (soft sprites)
@@ -441,7 +443,7 @@ const eye = new THREE.Group(); let eyeLight; const EYE_WORLD = new THREE.Vector3
   const halo = mesh(new THREE.SphereGeometry(1.0, 24, 14), new THREE.MeshBasicMaterial({ color: 0xff5a00, transparent: true, opacity: 0.14, fog: false, depthWrite: false }), 0, 0, 0, eye); halo.scale.set(1.4, 0.75, 0.2);
   mesh(new THREE.BoxGeometry(0.12, 0.74, 0.05), new THREE.MeshBasicMaterial({ color: 0x1a0500 }), 0, 0, 0.3, eye);
   eye.position.set(0, 15.2, 0.3); tower.add(eye);
-  eyeLight = new THREE.PointLight(0xff7a1a, 40, 25); eyeLight.position.set(0, 15.2, 1.5); tower.add(eyeLight);
+  eyeLight = new THREE.PointLight(0xff7a1a, 40, 25); eyeLight.position.set(0, 15.2, 1.5); eyeLight.userData.keep = true; tower.add(eyeLight);
   tower.position.set(4.5, 0, -8); tower.rotation.y = -0.3; scene.add(tower);
   tower.updateMatrixWorld(true); eye.getWorldPosition(EYE_WORLD);
 }
@@ -931,7 +933,7 @@ function renderAt(t) {
   // Sauron: triumph at "gehalten", sag at "null", shock at the riders, scroll for the vote
   const hop = bump(m, 4.5, 0.3, 0.3) + bump(m, 9.4, 0.25, 0.22) + bump(m, 15.45, 0.3, 0.3);
   const SP = m < 2.25 ? SAU_HOME : (m < 8.35 ? WALL_TOP : PODIUM), sauYaw = (m >= 2.25 && m < 8.35) ? -Math.PI / 2 : 0;
-  sau.position.set(SP.x, SP.y + 0.02 * Math.sin(t * 6) + hop, SP.z); sauShadow.position.set(SP.x, SP.y + 0.04, SP.z);
+  sau.position.set(SP.x, SP.y + 0.02 * Math.sin(t * 6) + hop, SP.z); sauShadow.position.set(SP.x, SP.y + 0.04, SP.z); fill.position.set(SP.x + 0.5, SP.y + 2.6, SP.z + 3.2);
   sau.scale.y = 1 - 0.06 * bump(m, 13.75, 0.4, 1);
   const holdsPlan = live(m, 19.1, 21.95);
   sword.visible = false; mace.visible = !holdsPlan; blueprint.visible = holdsPlan;
@@ -947,9 +949,9 @@ function renderAt(t) {
   // new orcs march in and stay; they droop when hungry
   const shown = Math.min(NEW_ORKS, orcs.length);
   orcs.forEach((o, i) => {
-    const t0 = 8.4 + i * 0.1, on = i < shown && m >= t0;
+    const t0 = 8.4 + i * 0.05, on = i < shown && m >= t0;
     o.visible = on; if (!on) return;
-    const k = ease(ramp(m, t0, t0 + (o.userData.dragon ? 1.8 : 1.0)));
+    const k = ease(ramp(m, t0, t0 + (o.userData.dragon ? 1.2 : 0.9)));
     o.position.lerpVectors(o.userData.start, o.userData.slot, k);
     if (o.userData.dragon) { o.userData.wings.forEach((wg, s2) => { wg.rotation.z = (s2 ? -1 : 1) * (0.25 + (k < 1 ? 0.6 : 0.2) * Math.sin(t * (k < 1 ? 9 : 2.5))); }); o.position.y = (1 - k) * o.userData.start.y + 0.04 * Math.sin(t * 2); return; }
     o.position.y = k < 1 ? Math.abs(Math.sin((m - t0) * 14)) * 0.08 : 0.01 * Math.sin(t * 4 + i);
@@ -1166,6 +1168,7 @@ scrub.addEventListener("input", () => { const x = parseFloat(scrub.value); if (u
 audio.addEventListener("ended", () => { if (playing) { setT(DUR); pause(); } });
 document.addEventListener("keydown", e => { if (e.code === "Space" && e.target === document.body) { e.preventDefault(); playing ? pause() : play(); } });
 
+{ const drop = []; scene.traverse(o => { if (o.isPointLight && !o.userData.keep) drop.push(o); }); drop.forEach(l => l.parent.remove(l)); }
 makeAvatar();
 let saved = null; try { saved = localStorage.getItem("sauron-voice"); } catch (e) {}
 selectVoice(saved || VOICES[0].id);
