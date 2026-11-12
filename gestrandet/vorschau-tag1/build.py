@@ -1,9 +1,9 @@
 import json, re, subprocess
 W = json.load(open('/home/user/videos/gestrandet/tag1/voice-words.json'))
-idx = dict(okay=0, das=6, tag=11, mein=15, paddel=18, ohne=19, boot=20, kokos=23, kevin=25, regel=26, jeder=28, follower=29, aktuell=36, einer=37, plus=38, und=40, da=41, sturm=45, huette=46, oder=50, du=57, morgen=64, kevinEnd=67)
+idx = dict(okay=0, das=6, tag=11, auf=15, riesig=17, was=19, mein=24, paddel=27, ohne=28, boot=29, kokos=32, kevin=34, regel=35, jeder=37, follower=38, aktuell=45, einer=46, plus=47, und=49, da=50, sturm=54, huette=55, oder=59, du=66, morgen=73, kevinEnd=76)
 E = {k: W[i]['s'] for k, i in idx.items()}
 E['dur'] = round(W[-1]['e'] + 1.4, 2)
-GOLD = {"kreuzfahrt", "kreuzfahrt.", "kevin.", "follower", "überlebender", "hütte", "feuer,", "kokosnuss", "folg,", "paddel."}
+GOLD = {"riesigen", "insel.", "kreuzfahrt", "kreuzfahrt.", "kevin.", "follower", "überlebender", "hütte", "feuer,", "kokosnuss", "folg,", "paddel."}
 RED = {"allein.", "ohne", "boot.", "sturm.", "sturm?", "gestrandet."}
 chunks, cur = [], []
 for w in W:
