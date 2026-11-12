@@ -759,7 +759,30 @@ loaded.then(() => {
       stage.style.transform = "none";
       renderer.setPixelRatio(1); renderer.setSize(1080, 1920, false); composer.setSize(1080, 1920);
     },
-    warp: x => x
+    warp: x => x,
+    thumb(dist, up, side, fov, lookUp) {
+      renderAt(W.okay + 3.2);
+      // a viewpoint on the slope, facing away from the volcano
+      const dir = new THREE.Vector2(GUY_POS.x - VOLC.x, GUY_POS.z - VOLC.y).normalize();
+      const P = new THREE.Vector3(VOLC.x + dir.x * dist, 0, VOLC.y + dir.y * dist); P.y = heightAt(P.x, P.z);
+      const lists = [veg.palms, veg.bushes, veg.rocks];
+      scene.traverse(o => { if (!o.isInstancedMesh) return; const L = lists.find(l => l.length === o.count); if (!L) return;
+        L.forEach(([x, y, z], i) => { const ax = x - P.x, az = z - P.z, along = -(ax * dir.x + az * dir.y), across = Math.abs(ax * dir.y - az * dir.x);
+          if ((along > -14 && along < dist - 20 && across < 6 + along * 0.35)) { o.getMatrixAt(i, _m); _m.decompose(_pp, _q, _s); _s.set(0, 0, 0); _m.compose(_pp, _q, _s); o.setMatrixAt(i, _m); } });
+        o.instanceMatrix.needsUpdate = true; });
+      guy.position.copy(P); guy.rotation.y = Math.atan2(dir.x, dir.y); poseAt(W.okay + 3.2); guy.position.copy(P);
+      const pv = new THREE.Vector2(dir.y, -dir.x); kevin.position.set(P.x + dir.x * 0.9 - pv.x * 0.55, heightAt(P.x + dir.x * 0.9, P.z + dir.y * 0.9) + 0.17, P.z + dir.y * 0.9 - pv.y * 0.55); kevin.rotation.y = guy.rotation.y + Math.PI;
+      scene.traverse(o => { if (o.isGroup && o.children.length === 2 && o.position.distanceTo(GUY_POS) < 3 && o !== kevin && o !== guy) o.visible = false; });
+      parrots.forEach(p => p.b.visible = false);
+      sun.position.copy(P).addScaledVector(sunDir, 120); sun.target.position.copy(P);
+      camera.fov = fov; camera.updateProjectionMatrix();
+      const perp = new THREE.Vector2(dir.y, -dir.x);
+      kevin.visible = false;
+      scene.fog.density = 0.00025; renderer.toneMappingExposure = 0.85;
+      camera.position.set(P.x + dir.x * 3.0 + perp.x * side, P.y + up, P.z + dir.y * 3.0 + perp.y * side);
+      const peakY = heightAt(VOLC.x, VOLC.y); camera.lookAt(VOLC.x, P.y + (peakY - P.y) * lookUp, VOLC.y);
+      composer.render();
+    }
   };
   window.__sceneReady = true;
   window.__preview = { renderAt, setT, warp: x => x };
