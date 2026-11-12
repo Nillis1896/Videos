@@ -413,8 +413,8 @@ const bolt = new THREE.Group(); scene.add(bolt); bolt.visible = false;
 let guy, mixer, actions = {}, handR, parrots = [];
 const loader = new GLTFLoader();
 const loaded = Promise.all([
-  loader.loadAsync("assets/barbarian.glb"),
-  loader.loadAsync("assets/parrot.glb")
+  loader.loadAsync("assets/barbarian.bin"),
+  loader.loadAsync("assets/parrot.bin")
 ]).then(([g, p]) => {
   guy = g.scene;
   ["Barbarian_Hat", "Barbarian_Cape", "1H_Axe_Offhand", "Barbarian_Round_Shield", "1H_Axe", "2H_Axe", "Mug"].forEach(n => { const o = guy.getObjectByName(n); if (o) o.visible = false; });
