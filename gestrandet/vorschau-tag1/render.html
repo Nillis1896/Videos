@@ -532,8 +532,8 @@ function buildCamera() {
     [W.huette - 0.01, [G.x - 0.4, H + 0.3, G.z - 4.0], [G.x, Y + 6, G.z + 40]],
     [W.huette, [G.x + 7, Y + 15, G.z + 16], [G.x, Y + 0.5, G.z - 4]],
     [W.du - 0.01, [G.x + 9, Y + 15.5, G.z + 14], [G.x, Y + 0.5, G.z - 4]],
-    [W.du, [G.x - 1.2, H + 0.9, G.z - 3.8], [G.x - 0.3, H - 0.1, G.z]],
-    [DUR, [G.x - 0.9, H + 0.85, G.z - 3.1], [G.x - 0.3, H - 0.1, G.z]]
+    [W.du, [G.x, H + 0.75, G.z - 3.6], [G.x, H - 0.05, G.z]],
+    [DUR, [G.x, H + 0.7, G.z - 3.0], [G.x, H - 0.05, G.z]]
   ].map(([t, p, q]) => [t, new THREE.Vector3(...p), new THREE.Vector3(...q)]);
 }
 const _cp = new THREE.Vector3(), _cq = new THREE.Vector3();
