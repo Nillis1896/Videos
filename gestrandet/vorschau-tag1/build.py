@@ -3,7 +3,7 @@ W = json.load(open('/home/user/videos/gestrandet/tag1/voice-words.json'))
 idx = dict(okay=0, das=6, tag=11, auf=15, riesig=17, was=19, mein=24, paddel=27, ohne=28, boot=29, kokos=32, kevin=34, regel=35, jeder=37, follower=38, aktuell=45, einer=46, plus=47, und=49, da=50, sturm=54, huette=55, oder=59, du=66, morgen=73, kevinEnd=76)
 E = {k: W[i]['s'] for k, i in idx.items()}
 E['dur'] = round(W[-1]['e'] + 1.4, 2)
-GOLD = {"riesigen", "insel.", "kreuzfahrt", "kreuzfahrt.", "lamin.", "follower", "überlebender", "hütte", "feuer,", "fußball", "folg,", "paddel."}
+GOLD = {"riesigen", "insel.", "kreuzfahrt", "kreuzfahrt.", "harry.", "follower", "überlebender", "hütte", "feuer,", "fußball", "folg,", "paddel."}
 RED = {"allein.", "ohne", "boot.", "sturm.", "sturm?", "gestrandet."}
 chunks, cur = [], []
 for w in W:
