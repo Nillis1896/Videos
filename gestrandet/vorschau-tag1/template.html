@@ -241,7 +241,7 @@ function fbm(x, y) { let s = 0, a = 0.5, f = 1; for (let i = 0; i < 5; i++) { s 
 
 // ---------- the island: one height function ----------
 const VOLC = new THREE.Vector2(-28, -38);
-function heightAt(x, z) {
+function rawHeight(x, z) {
   const ang = Math.atan2(z, x), r = Math.hypot(x, z * 1.12);
   const coast = 135 + 22 * (fbm(Math.cos(ang) * 2 + 7, Math.sin(ang) * 2 + 3) - 0.5) * 2 + 10 * Math.sin(ang * 3 + 1);
   const land = smooth(coast + 6, coast - 26, r);
@@ -250,6 +250,12 @@ function heightAt(x, z) {
   const volc = 62 * Math.exp(-(dv * dv) / (2 * 30 * 30)) - 14 * Math.exp(-(dv * dv) / (2 * 5 * 5));
   return -4 + land * (4.6 + hills * smooth(0, 30, coast - r) + volc);
 }
+
+// a flat sandy beach around the landing spot
+const BEACH = (() => { let z = 175; while (z > 0 && rawHeight(3, z) < 1.6) z -= 0.25; return new THREE.Vector2(3, z - 7); })();
+const BH = 1.7;
+function beachD(x, z) { return Math.hypot(x - BEACH.x, (z - BEACH.y) * 0.8); }
+function heightAt(x, z) { const r = rawHeight(x, z); if (r <= BH) return r; return BH + (r - BH) * smooth(10, 20, beachD(x, z)); }
 
 // ---------- renderer / scene ----------
 const canvas = document.getElementById("gl");
@@ -292,9 +298,10 @@ const terrainGeo = new THREE.PlaneGeometry(TS, TS, TN, TN); terrainGeo.rotateX(-
     const x = p.getX(i), z = p.getZ(i), h = p.getY(i), slope = 1 - n.getY(i), nz = fbm(x * 0.08, z * 0.08);
     if (h < -0.4) c.copy(SEA).lerp(WET, smooth(-3.5, -0.4, h));
     else if (h < 0.5) c.copy(WET).lerp(SAND, smooth(-0.4, 0.5, h));
-    else if (h < 2.2 + nz * 1.5) c.copy(SAND);
-    else if (h < 3.4 + nz * 1.5) c.copy(SAND).lerp(GRASS, smooth(2.2, 3.4, h - nz * 1.5));
+    else if (h < 3.6 + nz * 1.5) c.copy(SAND);
+    else if (h < 5.0 + nz * 1.5) c.copy(SAND).lerp(GRASS, smooth(3.6, 5.0, h - nz * 1.5));
     else c.copy(GRASS).lerp(JUNGLE, smooth(0.35, 0.75, nz));
+    if (h > 0.3 && beachD(x, z) < 15) c.copy(SAND).lerp(GRASS, smooth(11, 15, beachD(x, z)) * smooth(1.8, 3, h));
     if (slope > 0.32 || h > 34) c.lerp(ROCK, smooth(0.3, 0.5, slope) * 0.9 + smooth(30, 40, h) * 0.6);
     if (h > 44) c.lerp(ASH, smooth(44, 56, h));
     col.set([c.r, c.g, c.b], i * 3);
@@ -334,7 +341,7 @@ const veg = { palms: [], bushes: [], rocks: [], ferns: [] };
 let GUY_POS;
 {
   // hero beach: walk down the +z axis until we hit dry sand
-  let z = 175; while (z > 0 && heightAt(3, z) < 0.55) z -= 0.25; GUY_POS = new THREE.Vector3(3, heightAt(3, z - 2.2), z - 2.2);
+  GUY_POS = new THREE.Vector3(BEACH.x, heightAt(BEACH.x, BEACH.y), BEACH.y);
   const R2 = rng(91);
   for (let i = 0; i < 9000 && veg.palms.length < 700; i++) {
     const x = (R2() - 0.5) * 360, zz = (R2() - 0.5) * 360, h = heightAt(x, zz);
@@ -375,12 +382,12 @@ instanced(rockGeo, std(0x8a8278, { roughness: 1, flatShading: true }), veg.rocks
 
 // wreck + debris + paddle
 {
-  const g = new THREE.Group(); g.position.set(GUY_POS.x + 9, -0.4, GUY_POS.z + 16); g.rotation.set(0.3, -0.7, 0.45); scene.add(g);
+  const g = new THREE.Group(); g.position.set(GUY_POS.x + 9, -0.4, GUY_POS.z + 22); g.rotation.set(0.3, -0.7, 0.45); scene.add(g);
   const hullPts = []; for (let i = 0; i <= 10; i++) { const u = i / 10; hullPts.push(new THREE.Vector2(0.15 + 1.1 * Math.sin(u * Math.PI * 0.5), -0.6 + u * 1.2)); }
   const hull = mesh(new THREE.LatheGeometry(hullPts, 18, 0, Math.PI), std(0xa0703e, { side: THREE.DoubleSide }), 0, 0, 0, g); hull.rotation.z = Math.PI / 2; hull.scale.set(1, 2.4, 1);
   const mast = mesh(new THREE.CylinderGeometry(0.06, 0.07, 2.6, 8), std(0x6a4a2a), 0.4, 1.3, 0, g); mast.rotation.z = 0.8; mast.castShadow = true;
   const sail = mesh(new THREE.PlaneGeometry(1.4, 1.1), std(0xeae4d4, { side: THREE.DoubleSide }), 1.0, 1.7, 0.2, g); sail.rotation.set(0.3, 0.4, 0.7);
-  for (let i = 0; i < 9; i++) { const p = mesh(new THREE.BoxGeometry(1 + R() * 0.8, 0.08, 0.22), std(0xa8743f), GUY_POS.x - 6 + R() * 16, 0.05, GUY_POS.z + 5 + R() * 10); p.rotation.y = R() * 3; }
+  for (let i = 0; i < 9; i++) { const p = mesh(new THREE.BoxGeometry(1 + R() * 0.8, 0.08, 0.22), std(0xa8743f), GUY_POS.x - 6 + R() * 16, 0.05, GUY_POS.z + 12 + R() * 10); p.rotation.y = R() * 3; }
   const pd = new THREE.Group(); pd.position.set(GUY_POS.x + 1.6, GUY_POS.y, GUY_POS.z - 0.6); pd.rotation.z = 0.25; scene.add(pd);
   mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.6, 8), std(0x8a5a32), 0, 0.6, 0, pd).castShadow = true;
   const bl = mesh(new THREE.SphereGeometry(0.22, 12, 10), std(0xc98a4a), 0, 1.5, 0, pd); bl.scale.set(0.8, 1.6, 0.25); bl.castShadow = true;
@@ -498,24 +505,24 @@ function buildCamera() {
   K = [
     [0.0, [G.x - 1.4, Y + 3.4, G.z - 2.2], [G.x, Y + 0.2, G.z + 0.2]],
     [W.okay - 0.2, [G.x - 1.2, Y + 3.0, G.z - 2.6], [G.x, Y + 0.3, G.z + 0.1]],
-    [W.okay + 1.4, [G.x - 1.0, H + 0.2, G.z - 3.4], [G.x, H, G.z]],
-    [W.das, [G.x - 0.6, H + 0.15, G.z - 3.0], [G.x, H, G.z]],
+    [W.okay + 1.4, [G.x - 1.0, H + 0.9, G.z - 3.4], [G.x, H, G.z]],
+    [W.das, [G.x - 0.6, H + 0.85, G.z - 3.0], [G.x, H, G.z]],
     [W.tag - 0.2, [G.x + 70, 170, G.z + 230], [0, 10, 0]],
     [W.auf, [G.x - 40, 175, G.z + 215], [0, 10, 0]],
     [W.auf + 0.01, [-150, 70, 80], [V.x, V.y * 0.7, V.z]],
     [W.mein - 0.01, [-60, 66, 20], [V.x, V.y * 0.8, V.z]],
-    [W.mein, [G.x - 0.7, H + 0.15, G.z - 3.3], [G.x - 0.15, H - 0.05, G.z]],
-    [W.regel - 0.01, [G.x + 0.2, H + 0.1, G.z - 2.9], [G.x - 0.15, H - 0.05, G.z]],
+    [W.mein, [G.x - 0.7, H + 0.85, G.z - 3.3], [G.x - 0.15, H - 0.05, G.z]],
+    [W.regel - 0.01, [G.x + 0.2, H + 0.8, G.z - 2.9], [G.x - 0.15, H - 0.05, G.z]],
     [W.regel, [G.x - 4.5, Y + 3.2, G.z - 8.5], [G.x, Y + 1.2, G.z]],
     [W.aktuell - 0.01, [G.x - 3.5, Y + 2.8, G.z - 7.5], [G.x, Y + 1.2, G.z]],
-    [W.aktuell, [G.x + 1.3, H + 0.1, G.z - 3.6], [G.x - 0.4, H - 0.3, G.z]],
-    [W.und - 0.01, [G.x + 1.0, H + 0.05, G.z - 3.3], [G.x - 0.4, H - 0.3, G.z]],
-    [W.und, [G.x - 0.5, H + 0.2, G.z - 4.4], [G.x, Y + 4.5, G.z + 40]],
+    [W.aktuell, [G.x + 1.3, H + 0.8, G.z - 3.6], [G.x - 0.4, H - 0.3, G.z]],
+    [W.und - 0.01, [G.x + 1.0, H + 0.75, G.z - 3.3], [G.x - 0.4, H - 0.3, G.z]],
+    [W.und, [G.x - 0.5, H + 0.9, G.z - 4.4], [G.x, Y + 4.5, G.z + 40]],
     [W.huette - 0.01, [G.x - 0.4, H + 0.3, G.z - 4.0], [G.x, Y + 6, G.z + 40]],
     [W.huette, [G.x + 7, Y + 15, G.z + 16], [G.x, Y + 0.5, G.z - 4]],
     [W.du - 0.01, [G.x + 9, Y + 15.5, G.z + 14], [G.x, Y + 0.5, G.z - 4]],
-    [W.du, [G.x - 1.2, H + 0.2, G.z - 3.8], [G.x - 0.3, H - 0.1, G.z]],
-    [DUR, [G.x - 0.9, H + 0.15, G.z - 3.1], [G.x - 0.3, H - 0.1, G.z]]
+    [W.du, [G.x - 1.2, H + 0.9, G.z - 3.8], [G.x - 0.3, H - 0.1, G.z]],
+    [DUR, [G.x - 0.9, H + 0.85, G.z - 3.1], [G.x - 0.3, H - 0.1, G.z]]
   ].map(([t, p, q]) => [t, new THREE.Vector3(...p), new THREE.Vector3(...q)]);
 }
 const _cp = new THREE.Vector3(), _cq = new THREE.Vector3();
@@ -526,10 +533,10 @@ function cameraAt(t) {
   _cp.x += Math.sin(t * 0.8) * 0.04; _cp.y += Math.sin(t * 1.1 + 1) * 0.03;
   camera.position.copy(_cp); camera.lookAt(_cq);
 }
-const stormAt = t => ramp(t, W.und, W.sturm + 0.3) * 0.85 - ramp(t, W.huette, W.huette + 0.6) * 0.4;
+const stormAt = t => ramp(t, W.und - 0.3, W.sturm - 0.2) * 0.9 - ramp(t, W.huette, W.huette + 0.6) * 0.4;
 const FOG_DAY = new THREE.Color(0xbfd8e8), FOG_STORM = new THREE.Color(0x2e3640);
 const _v = new THREE.Vector3();
-function placeAt(el, obj, yOff) { obj.getWorldPosition(_v); _v.y += yOff; _v.project(camera); el.style.left = ((_v.x + 1) / 2 * 1080).toFixed(1) + "px"; el.style.top = ((1 - _v.y) / 2 * 1920).toFixed(1) + "px"; }
+function placeAt(el, obj, yOff) { obj.getWorldPosition(_v); _v.y += yOff; _v.project(camera); el.style.left = clamp((_v.x + 1) / 2 * 1080, 110, 900).toFixed(1) + "px"; el.style.top = clamp((1 - _v.y) / 2 * 1920, 300, 1150).toFixed(1) + "px"; }
 const kevTagEl = document.getElementById("kevtag");
 
 // post-processing
