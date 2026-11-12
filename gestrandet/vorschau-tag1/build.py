@@ -3,7 +3,7 @@ W = json.load(open('/home/user/videos/gestrandet/tag1/voice-words.json'))
 idx = dict(okay=0, das=6, tag=11, auf=15, riesig=17, was=19, mein=24, paddel=27, ohne=28, boot=29, kokos=32, kevin=34, regel=35, jeder=37, follower=38, aktuell=45, einer=46, plus=47, und=49, da=50, sturm=54, huette=55, oder=59, du=66, morgen=73, kevinEnd=76)
 E = {k: W[i]['s'] for k, i in idx.items()}
 E['dur'] = round(W[-1]['e'] + 1.4, 2)
-GOLD = {"riesigen", "insel.", "kreuzfahrt", "kreuzfahrt.", "kevin.", "follower", "überlebender", "hütte", "feuer,", "kokosnuss", "folg,", "paddel."}
+GOLD = {"riesigen", "insel.", "kreuzfahrt", "kreuzfahrt.", "lamin.", "follower", "überlebender", "hütte", "feuer,", "fußball", "folg,", "paddel."}
 RED = {"allein.", "ohne", "boot.", "sturm.", "sturm?", "gestrandet."}
 chunks, cur = [], []
 for w in W:
@@ -21,9 +21,9 @@ open('render.html', 'w').write('<meta charset="utf-8">\n' + s)
 # audio mix
 A = "/home/user/videos/gestrandet/audio/norm"; DUR = E['dur']
 SFX = [("wave", 0.0, 0.8), ("seagull", 0.6, 0.35), ("whoosh", E['das'] + 0.2, 0.45), ("knock", E['tag'], 0.5), ("whoosh", E['mein'], 0.35),
-       ("pop", E['paddel'], 0.5), ("pop", E['ohne'], 0.5), ("sad", E['boot'], 0.35), ("knock", E['kevin'], 0.6), ("pop", E['jeder'] + 0.1, 0.5),
+       ("pop", E['paddel'], 0.5), ("pop", E['ohne'], 0.5), ("sad", E['boot'], 0.35), ("pop", E['kevin'], 0.6), ("pop", E['jeder'] + 0.1, 0.5),
        ("pop", E['aktuell'], 0.45), ("sad", E['plus'] + 0.4, 0.4), ("thunder", E['da'], 0.55), ("thunder", E['sturm'] - 0.05, 0.75),
-       ("build", E['huette'], 0.5), ("fire", E['oder'], 0.5), ("knock", E['kevinEnd'], 0.6), ("seagull", E['du'], 0.25)]
+       ("build", E['huette'], 0.5), ("fire", E['oder'], 0.5), ("pop", E['kevinEnd'], 0.6), ("seagull", E['du'], 0.25)]
 inputs = ["-i", "/home/user/videos/gestrandet/tag1/voice.mp3", "-i", f"{A}/music.wav"]
 fl = [f"[0]apad=whole_dur={DUR},asplit=2[v][vk]", f"[1]aloop=loop=1:size=2e6,volume=0.55,atrim=0:{DUR},afade=t=in:d=0.3,afade=t=out:st={DUR-1.2:.2f}:d=1.2[mr]", "[mr][vk]sidechaincompress=threshold=0.04:ratio=5:attack=20:release=350[m]"]
 labels = ["[v]", "[m]"]

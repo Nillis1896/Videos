@@ -119,7 +119,7 @@
     <symbol id="i-paddle" viewBox="0 0 60 60"><path d="M14 46 L40 14" stroke="#8a5a32" stroke-width="5" stroke-linecap="round"/><path d="M38 6 Q52 4 54 16 Q50 26 42 22 Q34 18 38 6 Z" fill="#c98a4a" stroke="#13100c" stroke-width="3"/><path d="M10 50 L16 44" stroke="#13100c" stroke-width="7" stroke-linecap="round"/></symbol>
     <symbol id="i-boat" viewBox="0 0 60 60"><path d="M6 34 L54 34 L46 46 L14 46 Z" fill="#c98a4a" stroke="#13100c" stroke-width="3"/><path d="M30 34 L30 8 L48 30 Z" fill="#f2efe6" stroke="#13100c" stroke-width="3"/></symbol>
     <symbol id="i-x" viewBox="0 0 60 60"><path d="M10 10 L50 50 M50 10 L10 50" stroke="#ff3b3b" stroke-width="9" stroke-linecap="round"/></symbol>
-    <symbol id="i-kevin" viewBox="0 0 60 60"><circle cx="30" cy="32" r="22" fill="#7a4a24" stroke="#13100c" stroke-width="3"/><path d="M14 22 Q20 14 28 18 M34 16 Q42 14 46 22" stroke="#4a2a12" stroke-width="3" fill="none"/><circle cx="23" cy="30" r="4" fill="#fff"/><circle cx="37" cy="30" r="4" fill="#fff"/><circle cx="23" cy="31" r="2" fill="#13100c"/><circle cx="37" cy="31" r="2" fill="#13100c"/><path d="M21 40 Q30 48 39 40" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="i-kevin" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#f6f6f2" stroke="#13100c" stroke-width="3"/><path d="M30 12 L38 18 L35 27 L25 27 L22 18 Z" fill="#13100c"/><path d="M8 26 L14 22 L18 30 L12 38 Z M52 26 L46 22 L42 30 L48 38 Z M22 48 L26 40 L34 40 L38 48 Q30 54 22 48 Z" fill="#13100c"/><circle cx="24" cy="32" r="3.2" fill="#fff" stroke="#13100c" stroke-width="1.5"/><circle cx="36" cy="32" r="3.2" fill="#fff" stroke="#13100c" stroke-width="1.5"/></symbol>
     <symbol id="i-people" viewBox="0 0 60 60"><circle cx="22" cy="20" r="9" fill="#ffd8a8" stroke="#13100c" stroke-width="3"/><path d="M8 50 Q10 32 22 32 Q34 32 36 50 Z" fill="#f2efe6" stroke="#13100c" stroke-width="3"/><circle cx="42" cy="24" r="7" fill="#ffd8a8" stroke="#13100c" stroke-width="3" opacity=".6"/><path d="M32 50 Q34 36 42 36 Q52 36 54 50 Z" fill="#f2efe6" stroke="#13100c" stroke-width="3" opacity=".6"/></symbol>
     <symbol id="i-hut" viewBox="0 0 60 60"><path d="M8 30 L30 10 L52 30 Z" fill="#d8b060" stroke="#13100c" stroke-width="3"/><rect x="14" y="30" width="32" height="20" fill="#a8743f" stroke="#13100c" stroke-width="3"/><rect x="26" y="36" width="8" height="14" fill="#4a2e18"/></symbol>
     <symbol id="i-fire" viewBox="0 0 60 60"><path d="M30 6 Q44 22 38 34 Q46 30 44 22 Q54 34 46 46 Q38 56 30 54 Q18 54 14 44 Q10 32 22 24 Q20 32 26 34 Q20 18 30 6 Z" fill="#ff8a2a" stroke="#13100c" stroke-width="3"/><path d="M30 30 Q38 38 34 46 Q30 50 26 46 Q22 40 30 30 Z" fill="#ffe08a"/><path d="M14 54 L46 46 M14 46 L46 54" stroke="#6a4020" stroke-width="5" stroke-linecap="round"/></symbol>
@@ -152,7 +152,7 @@
           <div id="slots">
             <div class="slot" id="slot1"><svg><use href="#i-paddle"/></svg><span>PADDEL</span></div>
             <div class="slot" id="slot2"><svg><use href="#i-boat"/></svg><span>BOOT</span><svg class="x" id="slot2x"><use href="#i-x"/></svg></div>
-            <div class="slot" id="slot3" style="border-color:var(--sun)"><svg><use href="#i-kevin"/></svg><span class="sun">KEVIN</span></div>
+            <div class="slot" id="slot3" style="border-color:var(--sun)"><svg><use href="#i-kevin"/></svg><span class="sun">LAMIN</span></div>
           </div>
         </div></div>
 
@@ -164,11 +164,11 @@
 
         <div id="hud" class="ov">
           <div class="pill" id="hud1"><svg><use href="#i-people"/></svg><div>1<small>ÜBERLEBENDE</small></div></div>
-          <div class="pill" id="hud2"><svg><use href="#i-kevin"/></svg><div class="sun">KEVIN<small>KOKOSNUSS</small></div></div>
+          <div class="pill" id="hud2"><svg><use href="#i-kevin"/></svg><div class="sun">LAMIN<small>FUSSBALL</small></div></div>
           <div class="pill" id="hud3"><svg><use href="#i-hut"/></svg><div>0<small>HÜTTEN</small></div></div>
         </div>
 
-        <div id="kevtag" class="ov"><div id="kevtagin"><div class="tag">KEVIN</div><div class="tagarrow"></div></div></div>
+        <div id="kevtag" class="ov"><div id="kevtagin"><div class="tag">LAMIN</div><div class="tagarrow"></div></div></div>
 
         <div id="storm" class="ov">
           <div class="big outline" style="font-size:80px">HEUTE NACHT:</div>
@@ -220,8 +220,8 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
-const W = {"okay": 0.832, "das": 3.36, "tag": 5.12, "auf": 7.296, "riesig": 7.744, "was": 8.992, "mein": 10.144, "paddel": 11.136, "ohne": 11.68, "boot": 11.968, "kokos": 12.704, "kevin": 13.664, "regel": 14.08, "jeder": 14.752, "follower": 15.04, "aktuell": 17.248, "einer": 17.888, "plus": 18.4, "und": 19.118, "da": 19.2, "sturm": 20.288, "huette": 20.864, "oder": 21.92, "du": 23.648, "morgen": 25.6, "kevinEnd": 26.304, "dur": 28.15};
-const CAPS = [{"s":0.832,"e":1.728,"w":[["OKAY...",""]]},{"s":1.728,"e":2.08,"w":[["ICH",""],["HAB",""],["'NE",""]]},{"s":2.08,"e":3.36,"w":[["KREUZFAHRT","g"],["GEWONNEN.",""]]},{"s":3.36,"e":4.064,"w":[["DAS",""],["HIER",""],["IST",""]]},{"s":4.064,"e":5.12,"w":[["DIE",""],["KREUZFAHRT.","g"]]},{"s":5.12,"e":5.824,"w":[["TAG",""],["1.",""]]},{"s":5.824,"e":6.72,"w":[["GESTRANDET.","r"]]},{"s":6.72,"e":7.296,"w":[["ALLEIN.","r"]]},{"s":7.296,"e":8.256,"w":[["AUF",""],["EINER",""],["RIESIGEN","g"]]},{"s":8.256,"e":8.992,"w":[["INSEL.","g"]]},{"s":8.992,"e":9.408,"w":[["WAS",""],["DA",""],["WOHL",""]]},{"s":9.408,"e":10.144,"w":[["ALLES",""],["IST?",""]]},{"s":10.144,"e":11.008,"w":[["MEIN",""],["INVENTAR:",""]]},{"s":11.008,"e":11.68,"w":[["EIN",""],["PADDEL.","g"]]},{"s":11.68,"e":12.384,"w":[["OHNE","r"],["BOOT.","r"]]},{"s":12.384,"e":13.248,"w":[["UND",""],["EINE",""],["KOKOSNUSS","g"]]},{"s":13.248,"e":14.08,"w":[["NAMENS",""],["KEVIN.","g"]]},{"s":14.08,"e":14.752,"w":[["DIE",""],["REGEL:",""]]},{"s":14.752,"e":15.392,"w":[["JEDER",""],["FOLLOWER","g"]]},{"s":15.392,"e":16.288,"w":[["WIRD",""],["EIN",""],["ÜBERLEBENDER","g"]]},{"s":16.288,"e":17.248,"w":[["AUF",""],["DIESER",""],["INSEL.","g"]]},{"s":17.248,"e":17.888,"w":[["AKTUELL:",""]]},{"s":17.888,"e":18.4,"w":[["EINER.",""]]},{"s":18.4,"e":19.118,"w":[["PLUS",""],["KEVIN.","g"]]},{"s":19.118,"e":19.968,"w":[["UND",""],["DA",""],["HINTEN...",""]]},{"s":19.968,"e":20.864,"w":[["KOMMT",""],["EIN",""],["STURM.","r"]]},{"s":20.864,"e":21.312,"w":[["HÜTTE","g"],["GEGEN",""]]},{"s":21.312,"e":21.92,"w":[["DEN",""],["STURM?","r"]]},{"s":21.92,"e":22.592,"w":[["ODER",""],["FEUER,","g"]]},{"s":22.592,"e":23.04,"w":[["DAMIT",""],["UNS",""],["EIN",""]]},{"s":23.04,"e":23.648,"w":[["SCHIFF",""],["SIEHT?",""]]},{"s":23.648,"e":24.512,"w":[["DU",""],["ENTSCHEIDEST.",""]]},{"s":24.512,"e":25.152,"w":[["UND",""],["FOLG,","g"]]},{"s":25.152,"e":25.6,"w":[["SONST",""],["BIN",""],["ICH",""]]},{"s":25.6,"e":26.176,"w":[["MORGEN",""],["ALLEIN",""]]},{"s":26.176,"e":27.352,"w":[["MIT",""],["KEVIN.","g"]]}];
+const W = {"okay": 0.832, "das": 3.552, "tag": 5.248, "auf": 7.552, "riesig": 8.064, "was": 9.306, "mein": 10.56, "paddel": 11.584, "ohne": 12.16, "boot": 12.352, "kokos": 13.312, "kevin": 14.112, "regel": 14.72, "jeder": 15.424, "follower": 15.68, "aktuell": 17.664, "einer": 18.368, "plus": 18.88, "und": 19.754, "da": 19.84, "sturm": 20.992, "huette": 21.568, "oder": 22.656, "du": 24.448, "morgen": 26.4, "kevinEnd": 27.104, "dur": 29.05};
+const CAPS = [{"s":0.832,"e":1.792,"w":[["OKAY...",""]]},{"s":1.792,"e":2.208,"w":[["ICH",""],["HAB",""],["'NE",""]]},{"s":2.208,"e":3.552,"w":[["KREUZFAHRT","g"],["GEWONNEN.",""]]},{"s":3.552,"e":4.288,"w":[["DAS",""],["HIER",""],["IST",""]]},{"s":4.288,"e":5.248,"w":[["DIE",""],["KREUZFAHRT.","g"]]},{"s":5.248,"e":6.08,"w":[["TAG",""],["1.",""]]},{"s":6.08,"e":6.912,"w":[["GESTRANDET.","r"]]},{"s":6.912,"e":7.552,"w":[["ALLEIN.","r"]]},{"s":7.552,"e":8.576,"w":[["AUF",""],["EINER",""],["RIESIGEN","g"]]},{"s":8.576,"e":9.306,"w":[["INSEL.","g"]]},{"s":9.306,"e":9.728,"w":[["WAS",""],["DA",""],["WOHL",""]]},{"s":9.728,"e":10.56,"w":[["ALLES",""],["IST?",""]]},{"s":10.56,"e":11.456,"w":[["MEIN",""],["INVENTAR:",""]]},{"s":11.456,"e":12.16,"w":[["EIN",""],["PADDEL.","g"]]},{"s":12.16,"e":12.864,"w":[["OHNE","r"],["BOOT.","r"]]},{"s":12.864,"e":13.76,"w":[["UND",""],["EIN",""],["FUSSBALL","g"]]},{"s":13.76,"e":14.72,"w":[["NAMENS",""],["LAMIN.","g"]]},{"s":14.72,"e":15.424,"w":[["DIE",""],["REGEL:",""]]},{"s":15.424,"e":16.064,"w":[["JEDER",""],["FOLLOWER","g"]]},{"s":16.064,"e":16.832,"w":[["WIRD",""],["EIN",""],["ÜBERLEBENDER","g"]]},{"s":16.832,"e":17.664,"w":[["AUF",""],["DIESER",""],["INSEL.","g"]]},{"s":17.664,"e":18.368,"w":[["AKTUELL:",""]]},{"s":18.368,"e":18.88,"w":[["EINER.",""]]},{"s":18.88,"e":19.754,"w":[["PLUS",""],["LAMIN.","g"]]},{"s":19.754,"e":20.64,"w":[["UND",""],["DA",""],["HINTEN...",""]]},{"s":20.64,"e":21.568,"w":[["KOMMT",""],["EIN",""],["STURM.","r"]]},{"s":21.568,"e":22.016,"w":[["HÜTTE","g"],["GEGEN",""]]},{"s":22.016,"e":22.656,"w":[["DEN",""],["STURM?","r"]]},{"s":22.656,"e":23.36,"w":[["ODER",""],["FEUER,","g"]]},{"s":23.36,"e":23.808,"w":[["DAMIT",""],["UNS",""],["EIN",""]]},{"s":23.808,"e":24.448,"w":[["SCHIFF",""],["SIEHT?",""]]},{"s":24.448,"e":25.28,"w":[["DU",""],["ENTSCHEIDEST.",""]]},{"s":25.28,"e":25.984,"w":[["UND",""],["FOLG,","g"]]},{"s":25.984,"e":26.4,"w":[["SONST",""],["BIN",""],["ICH",""]]},{"s":26.4,"e":27.008,"w":[["MORGEN",""],["ALLEIN",""]]},{"s":27.008,"e":28.248,"w":[["MIT",""],["LAMIN.","g"]]}];
 const DUR = W.dur;
 
 // ---------- helpers ----------
@@ -395,9 +395,19 @@ instanced(rockGeo, std(0x8a8278, { roughness: 1, flatShading: true }), veg.rocks
 // Kevin the coconut
 const kevin = new THREE.Group();
 {
-  const faceTex = canvasTex(256, 128, (c, w, h) => { c.fillStyle = "#6e4220"; c.fillRect(0, 0, w, h); for (let i = 0; i < 260; i++) { c.fillStyle = `rgba(40,20,8,${0.2 + (i % 5) * 0.06})`; c.fillRect((i * 37) % w, (i * 53) % h, 6, 2); } c.fillStyle = "#fff"; c.beginPath(); c.arc(112, 54, 11, 0, 7); c.arc(146, 54, 11, 0, 7); c.fill(); c.fillStyle = "#111"; c.beginPath(); c.arc(114, 56, 5, 0, 7); c.arc(148, 56, 5, 0, 7); c.fill(); c.strokeStyle = "#fff"; c.lineWidth = 5; c.lineCap = "round"; c.beginPath(); c.arc(129, 72, 18, 0.2, Math.PI - 0.2); c.stroke(); c.lineWidth = 4; c.beginPath(); c.moveTo(98, 38); c.lineTo(120, 34); c.moveTo(138, 34); c.lineTo(160, 38); c.stroke(); });
+  const faceTex = canvasTex(512, 256, (c, w, h) => {
+    c.fillStyle = "#f6f6f2"; c.fillRect(0, 0, w, h);
+    const pent = (x, y, r) => { c.beginPath(); for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * 2 * Math.PI / 5; c.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r); } c.closePath(); c.fillStyle = "#151515"; c.fill(); };
+    [[30, 40], [150, 30], [380, 40], [470, 130], [30, 210], [140, 230], [380, 215], [80, 128], [430, 128]].forEach(([x, y]) => pent(x, y, 26));
+    c.strokeStyle = "rgba(0,0,0,.35)"; c.lineWidth = 2; for (let k = 0; k < 14; k++) { c.beginPath(); c.moveTo((k * 97) % w, 0); c.lineTo((k * 97 + 60) % w, h); c.stroke(); }
+    c.fillStyle = "#fff"; c.beginPath(); c.arc(234, 112, 22, 0, 7); c.arc(290, 112, 22, 0, 7); c.fill();
+    c.strokeStyle = "#151515"; c.lineWidth = 4; c.beginPath(); c.arc(234, 112, 22, 0, 7); c.stroke(); c.beginPath(); c.arc(290, 112, 22, 0, 7); c.stroke();
+    c.fillStyle = "#151515"; c.beginPath(); c.arc(238, 116, 10, 0, 7); c.arc(294, 116, 10, 0, 7); c.fill();
+    c.strokeStyle = "#151515"; c.lineWidth = 8; c.lineCap = "round"; c.beginPath(); c.arc(262, 146, 34, 0.25, Math.PI - 0.25); c.stroke();
+    c.lineWidth = 7; c.beginPath(); c.moveTo(206, 80); c.lineTo(246, 72); c.moveTo(278, 72); c.lineTo(318, 80); c.stroke();
+  });
   faceTex.offset.x = 0.25;
-  const k = mesh(new THREE.SphereGeometry(0.17, 24, 16), new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.85 }), 0, 0, 0, kevin); k.rotation.y = -Math.PI / 2; k.castShadow = true;
+  const k = mesh(new THREE.SphereGeometry(0.17, 32, 20), new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.45 }), 0, 0, 0, kevin); k.rotation.y = -Math.PI / 2; k.castShadow = true;
   scene.add(kevin);
 }
 let KEVIN_GROUND;
