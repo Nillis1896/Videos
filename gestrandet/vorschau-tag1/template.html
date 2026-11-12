@@ -419,8 +419,31 @@ const loaded = Promise.all([
   guy = g.scene;
   ["Barbarian_Hat", "Barbarian_Cape", "1H_Axe_Offhand", "Barbarian_Round_Shield", "1H_Axe", "2H_Axe", "Mug"].forEach(n => { const o = guy.getObjectByName(n); if (o) o.visible = false; });
   guy.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  // blaugrana striped jersey (no crest, no sponsor) on the body mesh
+  const bodyMesh = guy.getObjectByName("Barbarian_Body");
+  if (bodyMesh) {
+    const bb = new THREE.Box3().setFromBufferAttribute(bodyMesh.geometry.attributes.position);
+    const m = bodyMesh.material.clone();
+    m.onBeforeCompile = sh => {
+      sh.uniforms.uMin = { value: bb.min }; sh.uniforms.uMax = { value: bb.max };
+      sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\nvarying vec3 vObj;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvObj = position;");
+      sh.fragmentShader = sh.fragmentShader.replace("#include <common>", "#include <common>\nvarying vec3 vObj; uniform vec3 uMin; uniform vec3 uMax;")
+        .replace("#include <map_fragment>", `#include <map_fragment>
+          vec3 q = (vObj - uMin) / (uMax - uMin);
+          if (q.y > 0.36) {
+            float st = step(0.5, fract(q.x * 5.0 + 0.5));
+            vec3 jersey = mix(vec3(0.62, 0.0, 0.2), vec3(0.0, 0.26, 0.6), st);
+            if (q.y > 0.9) jersey = vec3(0.95, 0.75, 0.1);
+            diffuseColor.rgb = jersey;
+          } else if (q.y > 0.0) {
+            diffuseColor.rgb = vec3(0.02, 0.12, 0.35);
+          }`);
+    };
+    bodyMesh.material = m;
+  }
+  // lower half of the legs: same shorts colour stays from texture; arms keep skin
   const box = new THREE.Box3().setFromObject(guy), hgt = box.max.y - box.min.y;
-  guy.scale.setScalar(1.85 / hgt);
+  guy.scale.set(1.85 / hgt * 0.84, 1.85 / hgt * 0.92, 1.85 / hgt * 0.84);
   guy.position.copy(GUY_POS); scene.add(guy);
   handR = guy.getObjectByName("handslot.r") || guy.getObjectByName("hand.r") || guy.getObjectByName("handr");
   mixer = new THREE.AnimationMixer(guy);
@@ -454,12 +477,24 @@ function poseAt(t) {
   const f = i > 0 ? ramp(t, SEQ[i][1], SEQ[i][1] + FADE) : 1;
   set(i, f); if (f < 1) set(i - 1, 1 - f);
   mixer.update(0);
+  shapeBody();
+}
+let BONES = null;
+function shapeBody() {
+  if (!BONES) { BONES = {}; ["head", "chest", "upperleg.l", "upperleg.r", "lowerleg.l", "lowerleg.r", "foot.l", "foot.r", "upperarm.l", "upperarm.r", "lowerarm.l", "lowerarm.r", "hand.l", "hand.r"].forEach(n => BONES[n] = guy.getObjectByName(n)); }
+  const B = BONES, set = (n, x, y, z) => { if (B[n]) B[n].scale.set(x, y, z); };
+  set("head", 0.74, 0.74, 0.74);
+  set("chest", 0.86, 1.0, 0.9);
+  ["l", "r"].forEach(k => {
+    set("upperleg." + k, 0.85, 1.28, 0.85); set("lowerleg." + k, 1.0, 1.18, 1.0); set("foot." + k, 1.0, 1 / (1.28 * 1.18), 1.0);
+    set("upperarm." + k, 0.9, 1.18, 0.9); set("lowerarm." + k, 1.0, 1.12, 1.0); set("hand." + k, 1.0, 1 / (1.18 * 1.12), 1.0);
+  });
 }
 
 // ---------- camera path ----------
 let K;
 function buildCamera() {
-  const G = GUY_POS, Y = G.y, H = Y + 1.45, V = new THREE.Vector3(VOLC.x, heightAt(VOLC.x, VOLC.y), VOLC.y);
+  const G = GUY_POS, Y = G.y, H = Y + 1.05, V = new THREE.Vector3(VOLC.x, heightAt(VOLC.x, VOLC.y), VOLC.y);
   K = [
     [0.0, [G.x - 1.4, Y + 3.4, G.z - 2.2], [G.x, Y + 0.2, G.z + 0.2]],
     [W.okay - 0.2, [G.x - 1.2, Y + 3.0, G.z - 2.6], [G.x, Y + 0.3, G.z + 0.1]],
