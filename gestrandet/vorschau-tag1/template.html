@@ -760,6 +760,21 @@ loaded.then(() => {
       renderer.setPixelRatio(1); renderer.setSize(1080, 1920, false); composer.setSize(1080, 1920);
     },
     warp: x => x,
+    thumb2(back, up, fov, tY, clear) {
+      renderAt(W.okay + 3.2);
+      scene.fog = null; bloom.strength = 0; renderer.toneMappingExposure = 0.9;
+      const P = GUY_POS.clone();
+      if (clear) scene.traverse(o => { if (!o.isInstancedMesh) return; const L = [veg.palms, veg.bushes, veg.rocks].find(l => l.length === o.count); if (!L) return;
+        L.forEach(([x, y, z], i) => { const dx = x - P.x, dz = z - P.z; if (dz > -clear && dz < back + 2 && Math.abs(dx) < 4 + Math.max(0, -dz) * 0.5) { o.getMatrixAt(i, _m); _m.decompose(_pp, _q, _s); _s.set(0, 0, 0); _m.compose(_pp, _q, _s); o.setMatrixAt(i, _m); } });
+        o.instanceMatrix.needsUpdate = true; });
+      guy.rotation.y = 0; poseAt(W.okay + 3.2); guy.position.copy(P);
+      kevin.visible = false; parrots.forEach(p => p.b.visible = false);
+      scene.traverse(o => { if (o.isGroup && o.children.length === 2 && o.position.distanceTo(GUY_POS) < 3 && o !== kevin && o !== guy) o.visible = false; });
+      camera.fov = fov; camera.updateProjectionMatrix();
+      camera.position.set(P.x, P.y + up, P.z + back);
+      camera.lookAt(P.x, P.y + tY, P.z - 60);
+      composer.render();
+    },
     thumb(dist, up, side, fov, lookUp) {
       renderAt(W.okay + 3.2);
       // a viewpoint on the slope, facing away from the volcano
